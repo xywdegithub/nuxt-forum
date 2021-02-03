@@ -4,22 +4,23 @@
       <el-col :span="24">
         <ul class="list first-nav">
           <li :class="{ active: categoryId == null }">
-            <nuxt-link to="/">全部</nuxt-link>
+            <nuxt-link :to="{ name: 'index' }">全部</nuxt-link>
           </li>
           <li
             :class="{ active: categoryId == item.id }"
             v-for="item in data"
             :key="item.id"
           >
-            <router-link
-              :to="{ name: '/', query: { categoryId: item.id } }"
-              >{{ item.title }}</router-link
+            <a
+              @click="changeUrl(item.id)"
+              :to="{ query: { categoryId: item.id } }"
+              >{{ item.title }}</a
             >
           </li>
         </ul>
       </el-col>
       <el-col :span="22" v-if="categoryId">
-        <ul class="list" :class="{down:down==true}">
+        <ul class="list" :class="{ down: down == true }">
           <li
             :class="{ active: subCategoryId == item.id }"
             v-for="(item, index) in subData"
@@ -49,14 +50,14 @@
     <el-row class="hidden-sm-and-up mobile">
       <el-col :span="24">
         <ul class="mobile_list">
-          <li > 
-            <nuxt-link :class="{ mobile_active: categoryId == null }" to="/">全部</nuxt-link>
+          <li>
+            <nuxt-link :class="{ mobile_active: categoryId == null }" to="/"
+              >全部</nuxt-link
+            >
           </li>
-          <li
-            v-for="item in data"
-            :key="item.id"
-          >
-            <nuxt-link :class="{ mobile_active: categoryId == item.id }"
+          <li v-for="item in data" :key="item.id">
+            <nuxt-link
+              :class="{ mobile_active: categoryId == item.id }"
               :to="{ name: 'index', query: { categoryId: item.id } }"
               >{{ item.title }}</nuxt-link
             >
@@ -128,6 +129,11 @@ export default {
         this.limit = 10;
       } else {
         this.limit = 10000;
+      }
+    },
+    changeUrl(categoryId, subCategoryId) {
+      if (categoryId) {
+      this.$router.push({ query: { categoryId: categoryId } })
       }
     },
   },
@@ -208,7 +214,7 @@ export default {
   background-color: #334;
   color: #fff !important;
 }
-.down{
+.down {
   max-height: 40px;
   overflow: hidden;
 }

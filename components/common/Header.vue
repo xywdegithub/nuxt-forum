@@ -34,7 +34,7 @@
           </div>
         </template>
         <template v-else>
-          <router-link class="fabu" :to="{ name: 'Post' }">
+          <router-link class="fabu" :to="{ name: 'index-post' }">
             <i class="iconfont iconfabu"></i>
             发起</router-link
           >
@@ -54,7 +54,7 @@
             trigger="click"
             @command="handleCommand"
           >
-            <el-badge :is-dot="badgeNum>0"  class="item" >
+            <el-badge :is-dot="badgeNum > 0" class="item">
               <span class="el-dropdown-link">
                 {{ username }}
                 <i class="el-icon-caret-bottom"></i>
@@ -66,7 +66,7 @@
                 >个人中心</el-dropdown-item
               >
               <el-dropdown-item divided command="msg">
-                <el-badge :value="badgeNum" class="item" :hidden="badgeNum==0"
+                <el-badge :value="badgeNum" class="item" :hidden="badgeNum == 0"
                   >消息中心</el-badge
                 ></el-dropdown-item
               >
@@ -140,11 +140,11 @@ export default {
       isToken: false,
       logo: "",
       keyword: "",
-      badgeNum:this.$store.state.user.unReadMessage
+      badgeNum: this.$store.state.user.unReadMessage,
     };
   },
   computed: {
-    ...mapGetters(["getToken"]),
+    ...mapGetters('store',["getToken"]),
     ...mapGetters(["getAvatar"]),
     ...mapGetters(["getName"]),
     ...mapGetters(["getUserId"]),
@@ -152,13 +152,13 @@ export default {
   },
   watch: {
     getName(val) {
-      this.username=val
+      this.username = val;
     },
     getAvatar(val) {
       this.avatar = val;
     },
-    getUnReadMsg(val){
-          this.badgeNum=val
+    getUnReadMsg(val) {
+      this.badgeNum = val;
     },
     $route(to, from) {
       let title = this.$route.query.title;
@@ -166,8 +166,8 @@ export default {
     },
   },
   created() {
-     let title = this.$route.query.title;
-     if (title) this.keyword = title;
+    let title = this.$route.query.title;
+    if (title) this.keyword = title;
     this.getUser();
     this.allSiteConfig();
   },
@@ -211,14 +211,15 @@ export default {
         this.$store
           .dispatch("loginout", this.getUserId)
           .then(() => {
-            this.$router.push("/login/login");
+            console.log("/login");
+            this.$router.push("/login");
           })
           .catch((err) => {
             this.loading = false;
           });
       }
       if (command == "mine") {
-        this.$router.push("/personCenter");
+        this.$router.push({ name: "personCenter-baseInfo" });
       }
       if (command == "msg") {
         this.$router.push("/msg");
@@ -232,10 +233,10 @@ export default {
       }
     },
     register() {
-      this.$router.push("/login/register");
+      this.$router.push("/register");
     },
     login() {
-      this.$router.push("/login/login");
+      this.$router.push("/login");
     },
     post() {
       this.$router.push("/post");
@@ -329,7 +330,7 @@ export default {
 .icon {
   font-size: 22px;
 }
-.pointer{
+.pointer {
   cursor: pointer;
 }
 </style>

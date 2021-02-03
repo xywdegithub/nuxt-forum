@@ -2,7 +2,7 @@
 <div>
   <div class="hidden-xs-only">
     <router-link
-      :to="{ name: 'Details', query: { postId: item.postId } }"
+      :to="{ name: 'index-details', query: { postId: item.postId } }"
       class="invitation"
       v-for="(item, key) in data"
       :key="key"
@@ -35,7 +35,7 @@
         <p class="sub">
           <!-- <span class="label" :class="{labelTop:item.setTop}"  v-if="item.categoryName && item.setTop">{{item.categoryName}}</span> -->
           <span class="label" v-if="item.categoryName" @click.stop.prevent="toIndex(item)"
-            >{{ item.categoryName }} &nbsp;&nbsp;&nbsp;&nbsp;</span
+            >{{ item.categoryName }}</span
           >
           <span class="name" v-if="item.userName"
             ><span v-if="item.setTop"> • </span> • 发帖人：{{
@@ -57,7 +57,7 @@
   </div>
   <div class="hidden-sm-and-up mobile">
     <router-link
-      :to="{ name: 'Details', query: { postId: item.postId } }"
+      :to="{ name: 'index-details', query: { postId: item.postId } }"
       class="invitation mobile_invitation"
       v-for="(item, key) in data"
       :key="key"
@@ -77,7 +77,7 @@
       <div class="layout">
          <p class="sub">
           <span class="label" v-if="item.categoryName" @click.stop.prevent="toIndex(item)"
-            >{{ item.categoryName }} &nbsp;&nbsp;&nbsp;&nbsp;</span
+            >{{ item.categoryName }} </span
           >
           <span class="mobile_name" v-if="item.userName"
             > • {{
@@ -129,7 +129,7 @@ export default {
   methods: {
     toIndex(item){
       this.$router.push({
-        path: "/index",
+        name: "index",
         query: { categoryId: item.parentCategoryId, subCategoryId:item.postSubcategoryId },
       });
     }

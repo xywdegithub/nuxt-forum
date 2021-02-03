@@ -3,8 +3,6 @@ import Vuex from 'vuex'
 import { getToken, setToken, removeToken ,getUserAvatar,getUserName,getUserId,setUserName,setUserId,setUserAvatar,removeUserName,removeUserId,removeUserAvatar,setUnReadMessage,removeUnReadMessage,getUnReadMessage} from '@/utils/auth';
 import { login, register,findSiteUser ,loginout} from '@/network/user'
 
-Vue.use(Vuex)
-
 const store = () =>  new Vuex.Store({
   state: {
     user:{
@@ -56,7 +54,7 @@ const store = () =>  new Vuex.Store({
     login({ commit }, userInfo) {
       const { userName, password } = userInfo
       return new Promise((resolve, reject) => {
-        login(userName.trim(), password).then(response => {
+        login(userName, password).then(response => {
          let data= response.data
           commit('SET_TOKEN', data.token);
           commit('SET_NAME', data.user.userName);
@@ -76,9 +74,8 @@ const store = () =>  new Vuex.Store({
       })
     },
     loginout({ commit },userId){
-      console.log(userId)
       return new Promise((resolve, reject) => {
-        loginout(userId.trim()).then(response => {
+        loginout(userId).then(response => {
           commit('SET_TOKEN', null);
           commit('SET_NAME',null);
           commit('SET_UserId', null);
@@ -97,7 +94,7 @@ const store = () =>  new Vuex.Store({
     register({ commit }, userInfo) {
       const { userName, password ,nickname,email} = userInfo
       return new Promise((resolve, reject) => {
-        register(userName.trim(), password,email,nickname).then(response => {
+        register(userName, password,email,nickname).then(response => {
           const { data } = response
           resolve()
         }).catch(error => {

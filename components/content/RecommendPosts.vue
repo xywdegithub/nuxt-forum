@@ -3,7 +3,7 @@
     <div class="text">相关推荐</div>
     <li v-for="(item,key) in data" :key="key">
       <router-link :to="{
-                    name: 'Details',
+                    name: 'index-details',
                     query: { postId: item.postId },
                   }">{{item.title}}</router-link>
     </li>

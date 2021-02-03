@@ -226,6 +226,7 @@ export default {
     },
   },
   created() {
+    console.log('created')
     if (this.$route.query.categoryId) {
       this.categoryId = this.$route.query.categoryId;
     }
@@ -556,6 +557,7 @@ export default {
 .noData {
   color: #888;
   padding: 50px 0;
+  text-align: center;
 }
 .adminAbout {
   border-bottom: 1px solid #e2e2e2;

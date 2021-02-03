@@ -11,7 +11,11 @@ export default {
       { hid: 'description', name: 'description', content: '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://at.alicdn.com/t/font_1990924_xhbbztpo3um.css'
+      }
     ]
   },
 
@@ -25,7 +29,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-    { src: '@/plugins/route.js', ssr: true }
+    // { src: '@/plugins/route.js', ssr: true }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import subReply from "components/content/SubReply.vue";
+import subReply from "@/components/content/SubReply.vue";
 export default {
   data() {
     return {

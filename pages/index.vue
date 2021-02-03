@@ -16,7 +16,6 @@
 
 <script>
 import vHead from "@/components/common/Header.vue";
-
 export default {
   data() {
     return {};

@@ -60,7 +60,7 @@
   </div>
 </template>
 <script>
-import { selectOneMessage } from "network/mine.js";
+import { selectOneMessage } from "@/network/mine.js";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   data() {
