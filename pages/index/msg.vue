@@ -57,6 +57,10 @@ import {
 } from "@/network/mine.js";
 
 export default {
+      meta: 
+        {
+          requireAuth:true
+        },
   data() {
     return {
       title: "通知中心",
