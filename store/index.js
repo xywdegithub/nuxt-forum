@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { getToken, setToken, removeToken ,getUserAvatar,getUserName,getUserId,setUserName,setUserId,setUserAvatar,removeUserName,removeUserId,removeUserAvatar,setUnReadMessage,removeUnReadMessage,getUnReadMessage} from '@/utils/auth';
 import { login, register,findSiteUser ,loginout} from '@/network/user'
-
 const store = () =>  new Vuex.Store({
   state: {
     user:{
@@ -15,6 +14,7 @@ const store = () =>  new Vuex.Store({
   },
   getters:{
     getToken (state) {
+      console.log(state)
       return state.user.token
     },
     getAvatar (state) {

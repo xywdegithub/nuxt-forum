@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="hidden-xs-only">
-    <router-link
+   <nuxt-link
       :to="{ name: 'index-details', query: { postId: item.postId } }"
       class="invitation"
       v-for="(item, key) in data"
@@ -53,10 +53,10 @@
       <div class="right">
         <slot :item="item"></slot>
       </div>
-    </router-link>
+    </nuxt-link>
   </div>
   <div class="hidden-sm-and-up mobile">
-    <router-link
+    <nuxt-link
       :to="{ name: 'index-details', query: { postId: item.postId } }"
       class="invitation mobile_invitation"
       v-for="(item, key) in data"
@@ -103,7 +103,7 @@
       <div class="right">
         <slot :item="item"></slot>
       </div>
-    </router-link>
+    </nuxt-link>
   </div>
   </div>
 </template>
@@ -128,6 +128,7 @@ export default {
   },
   methods: {
     toIndex(item){
+      console.log(item)
       this.$router.push({
         name: "index",
         query: { categoryId: item.parentCategoryId, subCategoryId:item.postSubcategoryId },

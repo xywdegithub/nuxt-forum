@@ -1,8 +1,8 @@
 <template>
   <div class="searchResult">
     <div class="hidden-xs-only">
-      <router-link
-        :to="{ name: 'Details', query: { postId: item.postId } }"
+      <nuxt-link
+        :to="{ name: 'index-details', query: { postId: item.postId } }"
         class="invitation"
         v-for="(item, key) in data"
         :key="key"
@@ -21,11 +21,11 @@
             </p>
           </div>
         </div>
-      </router-link>
+      </nuxt-link>
     </div>
     <div class="hidden-sm-and-up mobile">
-      <router-link
-        :to="{ name: 'Details', query: { postId: item.postId } }"
+      <nuxt-link
+        :to="{ name: 'index-details', query: { postId: item.postId } }"
         class="invitation"
         v-for="(item, key) in data"
         :key="key"
@@ -48,7 +48,7 @@
             </p>
           </div>
         </div>
-      </router-link>
+      </nuxt-link>
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@ export default {
     },
     toIndex(item) {
       this.$router.push({
-        path: "/index",
+        name: "index",
         query: {
           categoryId: item.parentCategoryId,
           subCategoryId: item.postSubcategoryId,

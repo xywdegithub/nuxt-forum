@@ -175,5 +175,6 @@ export default {
   border: 1px solid #e6e6e6;
   border-radius: 4px;
   flex: 1;
+  min-height: 100%;
 }
 </style>

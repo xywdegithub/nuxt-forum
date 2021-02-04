@@ -92,7 +92,7 @@
           </el-dropdown>
         </template>
         <template v-else>
-          <router-link class="fabu" :to="{ name: 'Post' }">
+          <router-link class="fabu" :to="{ name: 'index-post' }">
             <i class="iconfont iconfabu"></i>
           </router-link>
           <!-- 用户头像 -->
@@ -144,7 +144,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('store',["getToken"]),
+    ...mapGetters(["getToken"]),
     ...mapGetters(["getAvatar"]),
     ...mapGetters(["getName"]),
     ...mapGetters(["getUserId"]),
@@ -166,6 +166,7 @@ export default {
     },
   },
   created() {
+    console.log('header')
     let title = this.$route.query.title;
     if (title) this.keyword = title;
     this.getUser();
@@ -219,7 +220,7 @@ export default {
           });
       }
       if (command == "mine") {
-        this.$router.push({ name: "personCenter-baseInfo" });
+        this.$router.push({ name: "index-personCenter" });
       }
       if (command == "msg") {
         this.$router.push("/msg");

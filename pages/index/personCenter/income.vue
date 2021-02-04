@@ -476,6 +476,7 @@ export default {
 }
 .noMore {
   padding: 20px;
+  text-align: center;
 }
 .category {
   padding: 0 5px;

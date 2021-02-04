@@ -20,17 +20,17 @@ export default {
       menu: [
         {
                     icon: 'el-icon-s-data',
-                    index: 'baseInfo',
+                    index: '/personCenter',
                     title: '基本资料',
                 },
                 {
                     icon: 'el-icon-s-data',
-                    index: 'mine',
+                    index: '/personCenter/mine',
                     title: '我的帖子',
                 },
                 {
                     icon: 'el-icon-lx-copy',
-                    index: 'income',
+                    index: '/personCenter/income',
                     title: '收益中心',
                 },
             ]

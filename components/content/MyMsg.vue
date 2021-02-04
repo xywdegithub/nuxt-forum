@@ -92,7 +92,7 @@ export default {
             this.$store
           .dispatch("getInfo")
           .then(() => {
-             this.$router.push({ path: "/details", query: { postId: item.postId } });
+             this.$router.push({ name: "index-details", query: { postId: item.postId } });
           })
           .catch((err) => {
             console.log(err)

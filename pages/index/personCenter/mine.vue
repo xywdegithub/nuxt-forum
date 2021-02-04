@@ -235,7 +235,9 @@ export default {
               userIcon:item.userIcon,
               setFeatured:item.setFeatured,
               setTop:item.setTop,
-              viewNumber:item.viewNumber
+              viewNumber:item.viewNumber,
+              postSubcategoryId:item.postSubcategoryId,
+              parentCategoryId:item.parentCategoryId
             });
           }
           this.list = this.list.concat(data);
@@ -401,5 +403,8 @@ export default {
   width: 78px;
   height: 78px;
   display: block;
+}
+.noMore{
+  text-align: center;
 }
 </style>

@@ -115,9 +115,7 @@ export default {
         }
       } else {
         for (let item of this.data) {
-          console.log(item);
           if (item.hasChildren) {
-            console.log(item.children);
             this.subData = this.subData.concat(item.children);
           }
         }

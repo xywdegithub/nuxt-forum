@@ -211,6 +211,7 @@ export default {
 .noData {
   color: #888;
   padding: 50px 0;
+  text-align: center;
 }
 .adminAbout {
   border-bottom: 1px solid #e2e2e2;
