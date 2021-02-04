@@ -272,25 +272,19 @@ import {
   deleteByPost,
 } from "@/network/index.js";
 export default {
-    metaInfo() {
+    head() {
     return {
-      title: this.article.title,
+       title: this.article.title,
       meta: [
         {
+          hid: "keywords",
           name: "keywords",
-          content:
-            this.article.parentCategoryName + "," + this.article.categoryName,
+          content:  this.article.parentCategoryName + " " + this.article.categoryName
         },
         {
+          hid: "description",
           name: "description",
-          content: this.article.content,
-        },
-      ],
-      link: [
-        {
-          // set link
-          rel: "base",
-          href: "http://47.111.178.85:9090/web/details",
+          content:this.article.content
         },
       ],
     };
@@ -404,11 +398,13 @@ export default {
       });
     },
     HTMLDecode(text) {
+      if (process.client) {
       var temp = document.createElement("div");
       temp.innerHTML = text;
       var output = temp.innerText || temp.textContent;
       temp = null;
       return output;
+      }
     },
     selectPostComment() {
       this.commentLoading = true;

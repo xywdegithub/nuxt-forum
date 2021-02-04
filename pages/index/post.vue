@@ -136,11 +136,13 @@ export default {
       });
     },
     HTMLDecode(text) {
+      if (process.client) {
       var temp = document.createElement("div");
       temp.innerHTML = text;
       var output = temp.innerText || temp.textContent;
       temp = null;
       return output;
+      }
     },
     findCategoryTree() {
       findCategoryTree().then((r) => {
@@ -225,13 +227,15 @@ export default {
       });
     },
     htmlEncode(html) {
-      let temp = document.createElement("div");
-      temp.textContent != undefined
-        ? (temp.textContent = html)
-        : (temp.innerText = html);
-      var output = temp.innerHTML;
-      temp = null;
-      return output;
+      if (process.client) {
+        let temp = document.createElement("div");
+        temp.textContent != undefined
+          ? (temp.textContent = html)
+          : (temp.innerText = html);
+        var output = temp.innerHTML;
+        temp = null;
+        return output;
+      }
     },
   },
 };

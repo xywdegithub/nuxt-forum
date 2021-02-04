@@ -132,6 +132,13 @@ import { mapGetters, mapMutations } from "vuex";
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
+  head() {
+    return {
+        link: [
+          { hid: "icon", rel: "icon", type: "image/x-icon", href: this.icon },
+        ],
+    };
+  },
   data() {
     return {
       webName: null,
@@ -141,6 +148,8 @@ export default {
       logo: "",
       keyword: "",
       badgeNum: this.$store.state.user.unReadMessage,
+      siteName: "",
+      icon: "",
     };
   },
   computed: {
@@ -166,7 +175,6 @@ export default {
     },
   },
   created() {
-    console.log('header')
     let title = this.$route.query.title;
     if (title) this.keyword = title;
     this.getUser();
@@ -176,20 +184,12 @@ export default {
     allSiteConfig() {
       allSiteConfig().then((res) => {
         if (res) {
-          if (res.topName) {
-            document.title = res.topName.value;
-          }
           if (res.siteName) {
             this.webName = res.siteName.value;
           }
           if (res.topIcon) {
-            var link =
-              document.querySelector("link[rel*='icon']") ||
-              document.createElement("link");
-            link.type = "image/x-icon";
-            link.rel = "shortcut icon";
-            link.href = res.topIcon.value;
-            document.getElementsByTagName("head")[0].appendChild(link);
+            this.icon = res.topIcon.value;
+            console.log(this.icon)
           }
           if (res.homeIcon) {
             this.logo = res.homeIcon.value;

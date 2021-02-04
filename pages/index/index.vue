@@ -1,125 +1,124 @@
 <template>
-<keep-alive>
-  <div class="index" id="index">
-    <classes :data="classes"></classes>
-    <el-row class="content-wrap" v-loading="loading">
-      <el-col :span="18" :xs="24" class="posts">
-        <template v-if="list.length > 0">
-          <div
-            class="nav hidden-xs-only"
-            v-if="subCategoryId || categoryId || title"
-          >
-            <span v-if="title" class="nav_title">{{ title }}</span>
-            <span v-else class="nav_title">{{ currentType }}</span>
-            <div class="postDetails" v-if="category">
-              <div class="postNum">
-                共有 <span class="number">{{ category.postNumber }}</span
-                >个讨论主题
-              </div>
-              <!-- <div class="postDesc" >
+  <keep-alive>
+    <div class="index" id="index">
+      <classes :data="classes"></classes>
+      <el-row class="content-wrap" v-loading="loading">
+        <el-col :span="18" :xs="24" class="posts">
+          <template v-if="list.length > 0">
+            <div
+              class="nav hidden-xs-only"
+              v-if="subCategoryId || categoryId || title"
+            >
+              <span v-if="title" class="nav_title">{{ title }}</span>
+              <span v-else class="nav_title">{{ currentType }}</span>
+              <div class="postDetails" v-if="category">
+                <div class="postNum">
+                  共有 <span class="number">{{ category.postNumber }}</span
+                  >个讨论主题
+                </div>
+                <!-- <div class="postDesc" >
                 {{ category.description }}1111111111
               </div> -->
+              </div>
             </div>
-          </div>
-          <div class="nav hidden-xs-only" v-else>
-            <span class="nav_title">
-              <i class="iconfont iconlist"></i>&nbsp;发现</span
-            >
-          </div>
-          <v-invitation class="contain" :data="list">
-            <template slot-scope="scope">
-              <div
-                v-if="scope.item.commentNumber"
-                class="replyCount hidden-xs-only"
-                @click.stop.prevent="replyData(scope.item)"
+            <div class="nav hidden-xs-only" v-else>
+              <span class="nav_title">
+                <i class="iconfont iconlist"></i>&nbsp;发现</span
               >
-                <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
-                <a v-else>{{ scope.item.commentNumber }}</a>
-              </div>
-              <div
-                class="hidden-sm-and-up mobile_replyCount"
-                @click.stop.prevent="replyData(scope.item)"
-              >
-                <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
-                <a v-else>{{ scope.item.commentNumber }}</a>
-              </div>
-            </template>
-          </v-invitation>
-        </template>
-        <template v-else>
-          <div class="noData">暂无数据</div>
-        </template>
-      </el-col>
-      <el-col :span="6" class="hidden-xs-only">
-        <div class="info">
-          <div class="adminAbout infoShow" v-if="subCategoryId">
-            <template v-if="admin">
-              <v-admin :data="admin">
-                <div class="require">
-                  <div class="requireItem">
-                    <div>发帖</div>
-                    <div class="mineCount">{{ admin.postNumber }}</div>
-                  </div>
-                  <div class="requireItem">
-                    <div>被赞</div>
-                    <div class="mineCount">{{ admin.agreeNumber }}</div>
-                  </div>
-                </div>
-              </v-admin>
-            </template>
-            <template v-else>
-              <div class="applyM">
-                <div class="currentClass">{{ currentType }}</div>
-                <el-button type="primary" size="small" @click="moderatorApply"
-                  >申请版主</el-button
+            </div>
+            <v-invitation class="contain" :data="list">
+              <template slot-scope="scope">
+                <div
+                  v-if="scope.item.commentNumber"
+                  class="replyCount hidden-xs-only"
+                  @click.stop.prevent="replyData(scope.item)"
                 >
+                  <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
+                  <a v-else>{{ scope.item.commentNumber }}</a>
+                </div>
+                <div
+                  class="hidden-sm-and-up mobile_replyCount"
+                  @click.stop.prevent="replyData(scope.item)"
+                >
+                  <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
+                  <a v-else>{{ scope.item.commentNumber }}</a>
+                </div>
+              </template>
+            </v-invitation>
+          </template>
+          <template v-else>
+            <div class="noData">暂无数据</div>
+          </template>
+        </el-col>
+        <el-col :span="6" class="hidden-xs-only">
+          <div class="info">
+            <div class="adminAbout infoShow" v-if="subCategoryId">
+              <template v-if="admin">
+                <v-admin :data="admin">
+                  <div class="require">
+                    <div class="requireItem">
+                      <div>发帖</div>
+                      <div class="mineCount">{{ admin.postNumber }}</div>
+                    </div>
+                    <div class="requireItem">
+                      <div>被赞</div>
+                      <div class="mineCount">{{ admin.agreeNumber }}</div>
+                    </div>
+                  </div>
+                </v-admin>
+              </template>
+              <template v-else>
+                <div class="applyM">
+                  <div class="currentClass">{{ currentType }}</div>
+                  <el-button type="primary" size="small" @click="moderatorApply"
+                    >申请版主</el-button
+                  >
+                </div>
+              </template>
+            </div>
+            <v-announcement :data="siteIntroduction"></v-announcement>
+            <v-announcement :data="announcement"></v-announcement>
+            <v-statistics class="statistic" :data="statistics"></v-statistics>
+            <div v-if="advs">
+              <div class="adv" v-for="item in advs" :key="item.advertisementId">
+                <a v-if="item.image" @click="advertiseClick(item)">
+                  <img :src="item.image" />
+                </a>
               </div>
-            </template>
-          </div>
-          <v-announcement :data="siteIntroduction"></v-announcement>
-          <v-announcement :data="announcement"></v-announcement>
-          <v-statistics class="statistic" :data="statistics"></v-statistics>
-          <div v-if="advs">
-            <div class="adv" v-for="item in advs" :key="item.advertisementId">
-              <a v-if="item.image" @click="advertiseClick(item)">
-                <img :src="item.image" />
-              </a>
             </div>
           </div>
+        </el-col>
+      </el-row>
+
+      <el-pagination
+        class="hidden-xs-only"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+      <el-pagination
+        class="hidden-sm-and-up mobile_pagination"
+        small
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, next, jumper"
+        :total="total"
+      ></el-pagination>
+      <div v-if="advs" class="hidden-sm-and-up mobile_adv">
+        <div class="adv" v-for="item in advs" :key="item.advertisementId">
+          <a v-if="item.image" @click="advertiseClick(item)">
+            <img :src="item.image" />
+          </a>
         </div>
-      </el-col>
-    </el-row>
-   
-    <el-pagination
-      class="hidden-xs-only"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[20, 50, 100]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-    ></el-pagination>
-    <el-pagination
-      class="hidden-sm-and-up mobile_pagination"
-      small
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-size="pageSize"
-      layout="total, prev, next, jumper"
-      :total="total"
-    ></el-pagination>
-    <div v-if="advs" class="hidden-sm-and-up mobile_adv">
-      <div class="adv" v-for="item in advs" :key="item.advertisementId">
-        <a v-if="item.image" @click="advertiseClick(item)">
-          <img :src="item.image" />
-        </a>
       </div>
     </div>
-   
-  </div>
-    </keep-alive>
+  </keep-alive>
 </template>
 
 <script>
@@ -140,28 +139,29 @@ import {
   moderatorInfo,
   moderatorApply,
   findOne,
-  selectAdvertisementList
+  selectAdvertisementList,
   // findFeaturedCategory,
 } from "@/network/index.js";
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
-//    metaInfo() {
-//     return {
-//       title:this.webTitle+'-'+this.siteTitle,
-//       meta: [{
-//         name:'keywords',
-//         content:this.currentType=="全部"?"":this.currentType
-//       },{
-//           name:'description',
-//         content:this.siteIntroduction.value
-//       }],
-//       link: [{                 // set link
-//         rel: 'base',
-//         href: 'http://47.111.178.85:9090/web/'
-//       }]
-//     };
-//   },
+  head() {
+    return {
+      title: this.webTitle + "-" + this.siteTitle,
+      meta: [
+        {
+          hid: "keywords",
+          name: "keywords",
+          content: this.currentType == "全部" ? "" : this.currentType,
+        },
+        {
+          hid: "description",
+          name: "description",
+          content: this.siteIntroduction.value,
+        },
+      ],
+    };
+  },
   data() {
     return {
       loading: false,
@@ -171,16 +171,13 @@ export default {
       categoryId: null,
       subCategoryId: null,
       title: "",
-      webTitle:'',
-      siteTitle:'',
+      webTitle: "",
+      siteTitle: "",
       currentType: "",
       cream: false,
       latest: false,
-      announcement: {
-      },
-      siteIntroduction:{
-
-      },
+      announcement: {},
+      siteIntroduction: {},
       propMap: {
         registerCount: "注册人数",
         postCount: "帖子数",
@@ -193,7 +190,7 @@ export default {
       admin: null,
       category: null,
       advs: [],
-      meta:null
+      meta: null,
     };
   },
   components: {
@@ -211,22 +208,22 @@ export default {
       this.categoryId = this.$route.query.categoryId;
       this.subCategoryId = this.$route.query.subCategoryId;
       this.title = this.$route.query.title;
-      if(this.$route.query.currentPage)
-      this.currentPage = this.$route.query.currentPage;
-      else this.currentPage=1
+      if (this.$route.query.currentPage)
+        this.currentPage = this.$route.query.currentPage;
+      else this.currentPage = 1;
       this.selectPosts();
       this.getType();
       this.findCategory();
       if (this.subCategoryId) {
         this.moderatorInfo();
-      }else{
-         this.admin = null;
-        this.advs=[]
+      } else {
+        this.admin = null;
+        this.advs = [];
       }
     },
   },
   created() {
-    console.log('created')
+    console.log("created");
     if (this.$route.query.categoryId) {
       this.categoryId = this.$route.query.categoryId;
     }
@@ -241,10 +238,10 @@ export default {
     this.findCategory();
     if (this.subCategoryId) {
       this.moderatorInfo();
-    }else{
-       this.admin = null;
-        this.advs=[]
-      }
+    } else {
+      this.admin = null;
+      this.advs = [];
+    }
     // this.findFeaturedCategory();
   },
   computed: {
@@ -310,25 +307,25 @@ export default {
             postNumber: res.postNumber,
             agreeNumber: res.agreeNumber,
             userId: res.userId,
-            isModerator:res.isModerator
+            isModerator: res.isModerator,
           };
           this.admin = data;
-          if(this.admin.isModerator){
-             this.selectAdvertisementList();
+          if (this.admin.isModerator) {
+            this.selectAdvertisementList();
           }
         } else {
           this.admin = null;
-          this.advs=[]
+          this.advs = [];
         }
       });
     },
     loadLimit() {
-        this.$store
+      this.$store
         .dispatch("getInfo")
         .then((res) => {
-            if (res.isModerator) {
-              this.selectAdvertisements();
-            } 
+          if (res.isModerator) {
+            this.selectAdvertisements();
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -339,7 +336,7 @@ export default {
         userId: this.admin.userId,
         type: 2,
       };
-     selectAdvertisementList(data).then((r) => {
+      selectAdvertisementList(data).then((r) => {
         let res = r.data;
         if (res) {
           this.advs = res;
@@ -351,14 +348,14 @@ export default {
         if (res && res.siteAnnotation) {
           this.announcement = res.siteAnnotation;
         }
-        if(res && res.siteIntroduction){
-          this.siteIntroduction=res.siteIntroduction
+        if (res && res.siteIntroduction) {
+          this.siteIntroduction = res.siteIntroduction;
         }
-        if(res && res.topName){
-          this.webTitle=res.topName.value
+        if (res && res.topName) {
+          this.webTitle = res.topName.value;
         }
-        if(res && res.siteName){
-          this.siteTitle=res.siteName.value
+        if (res && res.siteName) {
+          this.siteTitle = res.siteName.value;
         }
       });
     },
@@ -473,8 +470,8 @@ export default {
       location.href = "#index";
       this.currentPage = val;
       this.selectPosts();
-      this.$route.param
-      console.log(this.$route.param)
+      this.$route.param;
+      console.log(this.$route.param);
     },
   },
 };

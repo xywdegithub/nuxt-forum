@@ -42,20 +42,14 @@ import searchPosts from "@/components/content/SearchPosts.vue";
 import { selectPosts } from "@/network/index.js";
 
 export default {
-    metaInfo() {
+  head() {
     return {
       title: this.title,
       meta: [
         {
+          hid: "keywords",
           name: "keywords",
           content: this.title,
-        },
-      ],
-      link: [
-        {
-          // set link
-          rel: "base",
-          href: "http://47.111.178.85:9090/web/search",
         },
       ],
     };

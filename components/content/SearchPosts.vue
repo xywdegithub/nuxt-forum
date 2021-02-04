@@ -80,11 +80,13 @@ export default {
       return this.keyDeal(data);
     },
     HTMLDecode(text) {
+      if (process.client) {
       var temp = document.createElement("div");
       temp.innerHTML = text;
       var output = temp.innerText || temp.textContent;
       temp = null;
       return output;
+      }
     },
     toIndex(item) {
       this.$router.push({

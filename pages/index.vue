@@ -16,12 +16,22 @@
 
 <script>
 import vHead from "@/components/common/Header.vue";
+import { getToken, setToken, removeToken, getUserAvatar, getUserName, getUserId, setUserName, setUserId, setUserAvatar, removeUserName, removeUserId, removeUserAvatar, setUnReadMessage, removeUnReadMessage, getUnReadMessage } from '@/utils/auth';
 export default {
   data() {
     return {};
   },
   components: {
     vHead,
+  },
+  created(){
+      if(getToken()){
+          this.$store.commit('SET_TOKEN', getToken());
+        // this.$store.commit('SET_NAME', data.user.userName);
+        // this.$store.commit('SET_AVATAR', data.user.avatar)
+        // this.$store.commit('SET_UserId', data.user.userId)
+        // this.$store.commit('SET_UnReadMessage', data.user.unReadMessage)
+      }
   },
   methods: {},
 };
