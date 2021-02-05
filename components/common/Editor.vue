@@ -1,13 +1,10 @@
 <template>
- <client-only>
   <div class="editor">
     <div ref="editor"></div>
     <slot></slot>
   </div>
-   </client-only>
 </template>
 <script>
-import E from "wangeditor";
 export default {
   data() {
     return {
@@ -36,11 +33,16 @@ export default {
     },
   },
   mounted() {
- this.seteditor();
+    if(process.client){
+    this.seteditor();
     this.editor.txt.html(this.value);
+    }
   },
   methods: {
     seteditor() {
+       const E= require('wangeditor')
+    console.log(this.$refs.editor)
+    console.log(E)
       this.editor = new E(this.$refs.editor);
       this.editor.config.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.config.uploadImgServer =

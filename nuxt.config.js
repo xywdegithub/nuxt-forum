@@ -33,14 +33,14 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-    {
-      src: '@/plugins/vue-quill-editor',
-      ssr: false
-    }
+    // {
+    //   src: '@/plugins/vue-quill-editor',
+    //   ssr: false
+    // }
     //    { src: '@/plugins/wangEditor', ssr: false },
     //  { src: '@/plugins/route.js', ssr: false }
   ],
-  // vendor: ['external_library'],
+   vendor: ['wangeditor'],
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 

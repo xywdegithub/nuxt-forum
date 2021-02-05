@@ -157,12 +157,11 @@
               </div>
             </template>
           </v-reply>
-          <client-only>
+          <!-- <client-only>
         <quill-editor
            :data="content"
         />
-      </client-only>
-           <!-- <client-only>
+      </client-only> -->
           <div id="edit">
             <v-editor
               v-if="getUserId"
@@ -189,7 +188,6 @@
               <router-link :to="{ name: 'register' }"> 注册</router-link>
             </div>
           </div>
-           </client-only> -->
         </div>
       </el-col>
       <el-col :span="6" class="hidden-xs-only">
@@ -264,9 +262,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-  import quillEditor from "@/components/common/VueQuillEditor.vue";
+  //import quillEditor from "@/components/common/VueQuillEditor.vue";
 
-//  import vEditor from "@/components/common/Editor.vue";
+import vEditor from "@/components/common/Editor.vue";
 import vAdmin from "@/components/content/Admin.vue";
 import vPost from "@/components/content/Post.vue";
 import vReply from "@/components/content/Reply.vue";
@@ -356,7 +354,7 @@ export default {
     vPost,
     vReply,
     recommendPosts,
-    quillEditor
+    vEditor
   },
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
