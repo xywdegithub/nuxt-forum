@@ -147,12 +147,12 @@ import { allSiteConfig } from "@/network/website.js";
 export default {
   head() {
     return {
-      title: this.webTitle + "-" + this.siteTitle,
+      title: this.webTitle + " - " + this.siteTitle,
       meta: [
         {
           hid: "keywords",
           name: "keywords",
-          content: this.currentType == "全部" ? "" : this.currentType,
+          content: this.webTitle,
         },
         {
           hid: "description",
@@ -176,7 +176,6 @@ export default {
       currentType: "",
       cream: false,
       latest: false,
-      announcement: {},
       siteIntroduction: {},
       propMap: {
         registerCount: "注册人数",
@@ -199,6 +198,15 @@ export default {
     vInvitation,
     classes,
     vAdmin,
+  },
+  async asyncData({ params }) {
+    const {siteAnnotation,siteIntroduction,topName,siteName} = await allSiteConfig();
+    return {
+      announcement: siteAnnotation,
+      siteIntroduction:siteIntroduction,
+      webTitle: topName ? topName.value : "",
+      siteTitle:siteName ? siteName.value : "",
+    };
   },
   computed: {
     ...mapGetters(["getUserId"]),
@@ -223,7 +231,6 @@ export default {
     },
   },
   created() {
-    console.log("created");
     if (this.$route.query.categoryId) {
       this.categoryId = this.$route.query.categoryId;
     }
@@ -232,8 +239,6 @@ export default {
     }
     this.findCategoryTree();
     this.selectPosts();
-    // this.selectSiteAnnotation();
-    this.allSiteConfig();
     this.selectSiteStatic();
     this.findCategory();
     if (this.subCategoryId) {
@@ -359,12 +364,12 @@ export default {
         }
       });
     },
-    selectSiteAnnotation() {
-      selectSiteAnnotation().then((r) => {
-        let res = r.data;
-        this.announcement = res;
-      });
-    },
+    // selectSiteAnnotation() {
+    //   selectSiteAnnotation().then((r) => {
+    //     let res = r.data;
+    //     this.announcement = res;
+    //   });
+    // },
     selectSiteStatic() {
       selectSiteStatic().then((r) => {
         let res = r.data;
@@ -459,7 +464,9 @@ export default {
         if (item.url && item.url.indexOf("http") < 0) {
           item.url = "http://" + item.url;
         }
-        window.location.href = item.url;
+        if (process.client) {
+          window.location.href = item.url;
+        }
       });
     },
     handleSizeChange(val) {

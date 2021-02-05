@@ -1,10 +1,11 @@
 export default {
+  mode:'universal',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'nuxt-forum',
-    htmlAttrs: {
-      lang: 'en'
-    },
+    // htmlAttrs: {
+    //   lang: 'en'
+    // },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -23,15 +24,23 @@ export default {
   css: [
     'element-ui/lib/theme-chalk/index.css',
     'element-ui/lib/theme-chalk/display.css',
-    'assets/css/base.css'
+    'assets/css/base.css',
+    'quill/dist/quill.snow.css',
+    'quill/dist/quill.bubble.css',
+    'quill/dist/quill.core.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-     { src: '@/plugins/route.js', ssr: true }
+    // {
+    //   src: '@/plugins/vue-quill-editor',
+    //   ssr: true
+    // }
+    //  { src: '@/plugins/wangEditor', ssr: false }
+    //  { src: '@/plugins/route.js', ssr: true }
   ],
-
+  // vendor: ['external_library'],
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -41,6 +50,8 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    'js-cookie',
+    'cookieparser'
   ],
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

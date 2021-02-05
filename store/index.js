@@ -1,5 +1,7 @@
 import { getToken, setToken, removeToken, getUserAvatar, getUserName, getUserId, setUserName, setUserId, setUserAvatar, removeUserName, removeUserId, removeUserAvatar, setUnReadMessage, removeUnReadMessage, getUnReadMessage } from '@/utils/auth';
 import { login, register, findSiteUser, loginout } from '@/network/user'
+ import cookieparser from 'cookieparser'
+// const cookieparser = process.server ? require('cookieparser') : undefined
 export const state = (context) => ({
   user: {
     token: '',
@@ -44,9 +46,24 @@ export const mutations = {
   },
   SET_UnReadMessage: (state, unReadMessage) => {
     state.user.unReadMessage = unReadMessage
-  }
+  },
 }
 export const actions = {
+  nuxtServerInit({ commit }, { req }) {
+    let cookie = req.headers.cookie;
+    let parsed = cookieparser.parse(cookie)
+    try {
+      // 将Cookie中user的值转为JavaScript对象
+      commit('SET_TOKEN', parsed['Admin-Token'])
+      commit('SET_NAME', parsed['User-Name']);
+      commit('SET_AVATAR', parsed['User-Avatar'])
+      commit('SET_UserId', parsed['User-ID'])
+      commit('SET_UnReadMessage', parsed['User-UnReadMessage'])
+    } catch (err) {
+      console.log(err)
+      // No valid cookie found
+    }
+  },
   login({ commit }, userInfo) {
     const { userName, password } = userInfo
     return new Promise((resolve, reject) => {

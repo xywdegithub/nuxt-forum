@@ -7,15 +7,20 @@
             <template slot="edit" v-if="getUserId == article.userId">
               <a @click="toPost">
                 <i class="iconfont iconbianji edit hidden-xs-only">&nbsp;</i>
-                <i class="iconfont iconbianji mobile_edit hidden-sm-and-up">&nbsp;</i>
-
+                <i class="iconfont iconbianji mobile_edit hidden-sm-and-up"
+                  >&nbsp;</i
+                >
               </a>
               <span class="split hidden-xs-only">/</span>
               <span class="mobile_split hidden-sm-and-up">/</span>
               <a @click="deletePost">
-                <i class="iconfont icondustbin_icon delete hidden-xs-only">&nbsp;</i>
-                <i class="iconfont icondustbin_icon mobile_delete hidden-sm-and-up">&nbsp;</i>
-
+                <i class="iconfont icondustbin_icon delete hidden-xs-only"
+                  >&nbsp;</i
+                >
+                <i
+                  class="iconfont icondustbin_icon mobile_delete hidden-sm-and-up"
+                  >&nbsp;</i
+                >
               </a>
             </template>
             <template slot="good">
@@ -152,7 +157,7 @@
               </div>
             </template>
           </v-reply>
-          <div id="edit">
+          <!-- <div id="edit">
             <v-editor
               v-if="getUserId"
               id="editor"
@@ -162,7 +167,12 @@
               @change="changeEditor"
             >
               <div class="submit">
-                <el-button type="primary" @click="replyComment" :disabled="submitDisable">提交</el-button>
+                <el-button
+                  type="primary"
+                  @click="replyComment"
+                  :disabled="submitDisable"
+                  >提交</el-button
+                >
               </div>
             </v-editor>
             <div class="lineOff" v-else>
@@ -172,7 +182,7 @@
               或
               <router-link :to="{ name: 'register' }"> 注册</router-link>
             </div>
-          </div>
+          </div> -->
         </div>
       </el-col>
       <el-col :span="6" class="hidden-xs-only">
@@ -247,14 +257,12 @@
 
 <script>
 import { mapGetters } from "vuex";
-import Classes from "@/components/content/Classes.vue";
-import vEditor from "@/components/common/Editor.vue";
+import quillEditor from "@/components/common/VueQuillEditor.vue";
 import vAdmin from "@/components/content/Admin.vue";
 import vPost from "@/components/content/Post.vue";
 import vReply from "@/components/content/Reply.vue";
 import recommendPosts from "@/components/content/RecommendPosts.vue";
 import {
-  findCategoryTree,
   findPost,
   selectPostComment,
   faviorPost,
@@ -272,21 +280,34 @@ import {
   deleteByPost,
 } from "@/network/index.js";
 export default {
-    head() {
+  head() {
     return {
-       title: this.article.title,
+      title: this.title,
       meta: [
         {
           hid: "keywords",
           name: "keywords",
-          content:  this.article.parentCategoryName + " " + this.article.categoryName
+          content:
+            this.articleRes.parentCategoryName +
+            " " +
+            this.articleRes.categoryName,
         },
         {
           hid: "description",
           name: "description",
-          content:this.article.content
+          content: this.articleRes.content,
         },
       ],
+    };
+  },
+  async asyncData({ query }) {
+    let postData = {
+      postId: query.postId,
+    };
+    const { data } = await findPost(postData);
+    return {
+      title: data.title,
+      articleRes: data,
     };
   },
   data() {
@@ -305,7 +326,6 @@ export default {
           content: null,
         },
       },
-      classes: [],
       admin: null,
       replys: [],
       article: {},
@@ -319,39 +339,31 @@ export default {
       recommendPosts: [],
       currentReply: {},
       dialogWidth: "50%",
-      submitDisable:false
+      submitDisable: false,
     };
   },
   components: {
-    Classes,
     vAdmin,
     vPost,
     vReply,
-    vEditor,
+     quillEditor,
     recommendPosts,
-  },
-  watch: {
-    $route(to, from) {
-      this.postId = this.$route.query.postId;
-      //     this.findCategoryTree();
-      this.findPost();
-      this.selectPostComment();
-      this.selectPostReportTypeList();
-    },
   },
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
   },
   created() {
     this.postId = this.$route.query.postId;
-    //  this.findCategoryTree();
-    this.findPost();
+    // this.findPost();
+    this.dealArticle();
     this.selectPostComment();
     this.selectPostReportTypeList();
-    if (window.innerWidth < 768) {
-      this.dialogWidth = "80%";
-    } else {
-      this.dialogWidth = "50%";
+    if (process.client) {
+      if (window.innerWidth < 768) {
+        this.dialogWidth = "80%";
+      } else {
+        this.dialogWidth = "50%";
+      }
     }
   },
   updated() {
@@ -360,13 +372,26 @@ export default {
     }
   },
   methods: {
-    findCategoryTree() {
-      findCategoryTree().then((r) => {
-        let res = r.data;
-        if (res && res.rows && res.rows.hasChildren) {
-          this.classes = res.rows.children;
-        }
-      });
+    dealArticle() {
+      if (this.articleRes.content)
+        this.articleRes.content = this.HTMLDecode(this.articleRes.content);
+      this.article = this.articleRes;
+      let res = this.articleRes;
+      if (res.userName) {
+        let data = {
+          avatar: res.userIcon,
+          userName: res.userName,
+          introduction: res.introduction,
+          answerNumber: res.answerNumber,
+          agreeNumber: res.agreeNumber,
+          postNumber: res.postNumber,
+        };
+        this.admin = data;
+      }
+      if (this.recommendPosts.length == 0) {
+        this.selectRecommendPosts();
+      }
+      this.selectAdvertisementList();
     },
     findPost() {
       this.loading = true;
@@ -399,11 +424,11 @@ export default {
     },
     HTMLDecode(text) {
       if (process.client) {
-      var temp = document.createElement("div");
-      temp.innerHTML = text;
-      var output = temp.innerText || temp.textContent;
-      temp = null;
-      return output;
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
       }
     },
     selectPostComment() {
@@ -465,7 +490,6 @@ export default {
           type: "success",
         });
         this.article.isCollect = true;
-        // this.findPost();
       });
     },
     cancelfaviorPost() {
@@ -501,7 +525,7 @@ export default {
         });
         return;
       }
-      this.submitDisable=true;
+      this.submitDisable = true;
       let data = {
         postId: this.postId,
         commentUserId: this.commentUserId,
@@ -515,7 +539,7 @@ export default {
           type: "success",
         });
         this.content = "";
-         this.submitDisable=false;
+        this.submitDisable = false;
         this.$refs.editor.editor.txt.clear();
         if (res && res.data) {
           if (this.parentCommentId == 0) {
@@ -557,7 +581,6 @@ export default {
           this.article.isLike = r.data.isLike;
           this.admin.agreeNumber = r.data.agreeNumber;
         }
-        //this.findPost();
       });
     },
     selectPostReportTypeList() {
@@ -710,7 +733,7 @@ export default {
         });
     },
     beforeComent(userId, parentCommentId, currentData, subData) {
-      console.log(userId)
+      console.log(userId);
       this.anchor();
       this.parentCommentId = parentCommentId;
       this.commentUserId = userId;
@@ -736,7 +759,9 @@ export default {
         if (item.url && item.url.indexOf("http") < 0) {
           item.url = "http://" + item.url;
         }
-        window.location.href = item.url;
+        if (process.client) {
+          window.location.href = item.url;
+        }
       });
     },
     toPost() {
@@ -934,9 +959,9 @@ export default {
   color: #666;
   font-weight: normal;
 }
-.mobile_edit{
-   font-size: 14px;
- color: #666;
+.mobile_edit {
+  font-size: 14px;
+  color: #666;
   font-weight: normal;
 }
 .split {
@@ -956,8 +981,8 @@ export default {
   color: #f56c6c;
   font-weight: normal;
 }
-.mobile_delete{
-   font-size: 16px;
+.mobile_delete {
+  font-size: 16px;
   color: #f56c6c;
   font-weight: normal;
 }

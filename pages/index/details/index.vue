@@ -5,6 +5,7 @@
   </div>
 </template>
 <script>
+// import vEditor from "@/components/common/Editor.vue";
 import E from "wangeditor";
 export default {
   data() {
@@ -15,6 +16,9 @@ export default {
       editor: null,
       info: null,
     };
+  },
+  components:{
+    //   vEditor
   },
   props: {
     data: String,
@@ -42,7 +46,7 @@ export default {
   },
   methods: {
     seteditor() {
-      this.editor = wangeditor(this.$refs.editor);
+      this.editor = new E(this.$refs.editor);
       this.editor.config.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.config.uploadImgServer =
         "http://47.111.178.85:9090/site/file/batchUpload"; // 填写配置服务器端地址

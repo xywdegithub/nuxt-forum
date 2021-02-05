@@ -34,11 +34,8 @@ export default {
     },
   },
   mounted() {
-    if(process.client){
- this.seteditor();
+    this.seteditor();
     this.editor.txt.html(this.value);
-    }
-   
   },
   methods: {
     seteditor() {
