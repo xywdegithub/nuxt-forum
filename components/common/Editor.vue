@@ -1,8 +1,10 @@
 <template>
+ <client-only>
   <div class="editor">
     <div ref="editor"></div>
     <slot></slot>
   </div>
+   </client-only>
 </template>
 <script>
 import E from "wangeditor";
@@ -34,15 +36,12 @@ export default {
     },
   },
   mounted() {
-    if(process.client){
  this.seteditor();
     this.editor.txt.html(this.value);
-    }
-   
   },
   methods: {
     seteditor() {
-      this.editor = wangeditor(this.$refs.editor);
+      this.editor = new E(this.$refs.editor);
       this.editor.config.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.config.uploadImgServer =
         "http://47.111.178.85:9090/site/file/batchUpload"; // 填写配置服务器端地址

@@ -189,7 +189,6 @@ export default {
           }
           if (res.topIcon) {
             this.icon = res.topIcon.value;
-            console.log(this.icon)
           }
           if (res.homeIcon) {
             this.logo = res.homeIcon.value;

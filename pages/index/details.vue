@@ -157,7 +157,13 @@
               </div>
             </template>
           </v-reply>
-          <!-- <div id="edit">
+          <client-only>
+        <quill-editor
+           :data="content"
+        />
+      </client-only>
+           <!-- <client-only>
+          <div id="edit">
             <v-editor
               v-if="getUserId"
               id="editor"
@@ -182,7 +188,8 @@
               或
               <router-link :to="{ name: 'register' }"> 注册</router-link>
             </div>
-          </div> -->
+          </div>
+           </client-only> -->
         </div>
       </el-col>
       <el-col :span="6" class="hidden-xs-only">
@@ -257,7 +264,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-import quillEditor from "@/components/common/VueQuillEditor.vue";
+  import quillEditor from "@/components/common/VueQuillEditor.vue";
+
+//  import vEditor from "@/components/common/Editor.vue";
 import vAdmin from "@/components/content/Admin.vue";
 import vPost from "@/components/content/Post.vue";
 import vReply from "@/components/content/Reply.vue";
@@ -346,15 +355,14 @@ export default {
     vAdmin,
     vPost,
     vReply,
-     quillEditor,
     recommendPosts,
+    quillEditor
   },
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
   },
   created() {
     this.postId = this.$route.query.postId;
-    // this.findPost();
     this.dealArticle();
     this.selectPostComment();
     this.selectPostReportTypeList();
@@ -392,35 +400,6 @@ export default {
         this.selectRecommendPosts();
       }
       this.selectAdvertisementList();
-    },
-    findPost() {
-      this.loading = true;
-      let data = {
-        postId: this.postId,
-      };
-      findPost(data).then((r) => {
-        this.loading = false;
-        let res = r.data;
-        if (res) {
-          if (res.content) res.content = this.HTMLDecode(res.content);
-          this.article = res;
-          if (res.userName) {
-            let data = {
-              avatar: res.userIcon,
-              userName: res.userName,
-              introduction: res.introduction,
-              answerNumber: res.answerNumber,
-              agreeNumber: res.agreeNumber,
-              postNumber: res.postNumber,
-            };
-            this.admin = data;
-          }
-          if (this.recommendPosts.length == 0) {
-            this.selectRecommendPosts();
-          }
-          this.selectAdvertisementList();
-        }
-      });
     },
     HTMLDecode(text) {
       if (process.client) {
