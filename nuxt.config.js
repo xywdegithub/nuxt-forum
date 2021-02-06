@@ -30,7 +30,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-     { src: '@/plugins/route.js', ssr: false }
+    '@/plugins/route.js'
   ],
    vendor: ['wangeditor'],
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -60,7 +60,8 @@ export default {
         path: "/",
         component: resolve(__dirname,'pages/index.vue'),
         name: "index",
-        children: [{
+        children: [
+          {
           path: "details",
           component:resolve(__dirname,'pages/index/details.vue'),
           name: "index-details"

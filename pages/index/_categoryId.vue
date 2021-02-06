@@ -144,6 +144,13 @@ import {
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
+     validate ({ params }) {
+         console.log(/^\d+$/.test(params.categoryId))
+    if(params.categoryId){
+    return /^\d+$/.test(params.categoryId)
+    }
+    else return true
+  },
   head() {
     return {
       title: this.webTitle + " - " + this.siteTitle,
