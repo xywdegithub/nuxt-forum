@@ -361,6 +361,7 @@ export default {
     ...mapGetters(["getUserId", "getToken"]),
   },
   created() {
+    console.log('details ')
     this.postId = this.$route.query.postId;
     this.dealArticle();
     this.selectPostComment();

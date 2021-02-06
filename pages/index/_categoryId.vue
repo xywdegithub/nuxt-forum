@@ -133,7 +133,6 @@ import {
   selectPosts,
   selectFeaturedPosts,
   selectCollectPosts,
-  selectSiteAnnotation,
   selectSiteStatic,
   findCategory,
   moderatorInfo,
@@ -189,7 +188,7 @@ export default {
       admin: null,
       category: null,
       advs: [],
-      meta: null,
+      announcement:{}
     };
   },
   components: {
@@ -211,9 +210,11 @@ export default {
   computed: {
     ...mapGetters(["getUserId"]),
   },
+  watchQuery: ['categoryId','subCategoryId','pageSize','currentPage'],
   watch: {
-    $route(to, from) {
-      this.categoryId = this.$route.query.categoryId;
+    '$route'(to, from) {
+        console.log('route')
+      this.categoryId = this.$route.params.categoryId;
       this.subCategoryId = this.$route.query.subCategoryId;
       this.title = this.$route.query.title;
       if (this.$route.query.currentPage)
@@ -231,8 +232,9 @@ export default {
     },
   },
   created() {
-    if (this.$route.query.categoryId) {
-      this.categoryId = this.$route.query.categoryId;
+      console.log('index created')
+    if (this.$route.params.categoryId) {
+      this.categoryId = this.$route.params.categoryId;
     }
     if (this.$route.query.subCategoryId) {
       this.subCategoryId = this.$route.query.subCategoryId;

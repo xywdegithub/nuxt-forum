@@ -415,6 +415,7 @@ export default {
 .showItem,
 .con {
   flex: 1;
+  text-align: center;
 }
 .showItem:not(:last-child) {
   border-right: 1px solid #eee;

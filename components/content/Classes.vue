@@ -11,11 +11,14 @@
             v-for="item in data"
             :key="item.id"
           >
-            <a
+          <nuxt-link :to="{ name: 'index-categoryId',params:{ categoryId: item.id} }">
+            {{ item.title }}
+          </nuxt-link>
+            <!-- <a
               @click="changeUrl(item.id)"
               :to="{ query: { categoryId: item.id } }"
               >{{ item.title }}</a
-            >
+            > -->
           </li>
         </ul>
       </el-col>
@@ -29,8 +32,8 @@
           >
             <router-link
               :to="{
-                name: 'index',
-                query: { categoryId: item.parentId, subCategoryId: item.id },
+                name: 'index-categoryId',params:{ categoryId: item.parentId},
+                query: { subCategoryId: item.id },
               }"
               >{{ item.title }}</router-link
             >
@@ -87,9 +90,10 @@ export default {
       },
     },
   },
+  watchQuery: ['categoryId'],
   watch: {
     $route(to, from) {
-      this.categoryId = this.$route.query.categoryId;
+      this.categoryId = this.$route.params.categoryId;
       this.subCategoryId = this.$route.query.subCategoryId;
       this.initSub();
     },
@@ -99,7 +103,7 @@ export default {
     },
   },
   created() {
-    this.categoryId = this.$route.query.categoryId;
+    this.categoryId = this.$route.params.categoryId;
     this.subCategoryId = this.$route.query.subCategoryId;
     this.initSub();
   },

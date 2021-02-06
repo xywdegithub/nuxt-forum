@@ -30,12 +30,7 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '@/plugins/element-ui',
-    // {
-    //   src: '@/plugins/vue-quill-editor',
-    //   ssr: false
-    // }
-    //    { src: '@/plugins/wangEditor', ssr: false },
-    //  { src: '@/plugins/route.js', ssr: false }
+     { src: '@/plugins/route.js', ssr: false }
   ],
    vendor: ['wangeditor'],
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -50,7 +45,79 @@ export default {
     'js-cookie',
     'cookieparser'
   ],
-
+  router: {
+    extendRoutes(routes, resolve) {
+       routes.length = 0 
+      routes.push({
+        path: "/login",
+        component: resolve(__dirname,'pages/login.vue'),
+        name: "login"
+      }, {
+        path: "/register",
+        component: resolve(__dirname,'pages/register.vue'),
+        name: "register"
+      }, {
+        path: "/",
+        component: resolve(__dirname,'pages/index.vue'),
+        name: "index",
+        children: [{
+          path: "details",
+          component:resolve(__dirname,'pages/index/details.vue'),
+          name: "index-details"
+        }, {
+          path: "msg",
+          component:resolve(__dirname,'pages/index/msg.vue'),
+          name: "index-msg",
+          meta:{
+            requireAuth:true
+          }
+        }, {
+          path: "personCenter",
+          component:resolve(__dirname,'pages/index/personCenter.vue'),
+          meta:{
+            requireAuth:true
+          },
+          children: [{
+            path: "",
+            component:resolve(__dirname,'pages/index/personCenter/index.vue'),
+            name: "index-personCenter",
+            meta:{
+                requireAuth:true
+              }
+          }, {
+            path: "income",
+            component:resolve(__dirname,'pages/index/personCenter/income.vue'),
+            name: "index-personCenter-income",
+            meta:{
+                requireAuth:true
+              }
+          }, {
+            path: "mine",
+            component:resolve(__dirname,'pages/index/personCenter/mine.vue'),
+            name: "index-personCenter-mine",
+            meta:{
+                requireAuth:true
+              }
+          }]
+        }, {
+          path: "post",
+          component:resolve(__dirname,'pages/index/post.vue'),
+          name: "index-post",
+          meta:{
+            requireAuth:true
+          }
+        }, {
+          path: "search",
+          component:resolve(__dirname,'pages/index/search.vue'),
+          name: "index-search"
+        }, {
+          path: ":categoryId?",
+          component:resolve(__dirname,'pages/index/_categoryId.vue'),
+          name: "index-categoryId"
+        }]
+      })
+    }
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     transpile: [/^element-ui/],

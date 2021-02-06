@@ -1,4 +1,6 @@
+
 import { getToken} from '@/utils/auth';
+
 export default ({ app, store }) => {
     app.router.beforeEach((to, from, next) => {
         console.log(to)
@@ -7,7 +9,7 @@ export default ({ app, store }) => {
              next();
             }else {
              next({
-              path:'/login'
+                name:'index-categoryId'
              })
             }
            }
