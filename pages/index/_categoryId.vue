@@ -144,12 +144,10 @@ import {
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
-     validate ({ params }) {
-         console.log(/^\d+$/.test(params.categoryId))
-    if(params.categoryId){
-    return /^\d+$/.test(params.categoryId)
-    }
-    else return true
+  validate({ params }) {
+    if (params.categoryId) {
+      return /^\d+$/.test(params.categoryId);
+    } else return true;
   },
   head() {
     return {
@@ -195,7 +193,7 @@ export default {
       admin: null,
       category: null,
       advs: [],
-      announcement:{}
+      announcement: {},
     };
   },
   components: {
@@ -206,21 +204,26 @@ export default {
     vAdmin,
   },
   async asyncData({ params }) {
-    const {siteAnnotation,siteIntroduction,topName,siteName} = await allSiteConfig();
+    const {
+      siteAnnotation,
+      siteIntroduction,
+      topName,
+      siteName,
+    } = await allSiteConfig();
     return {
       announcement: siteAnnotation,
-      siteIntroduction:siteIntroduction,
+      siteIntroduction: siteIntroduction,
       webTitle: topName ? topName.value : "",
-      siteTitle:siteName ? siteName.value : "",
+      siteTitle: siteName ? siteName.value : "",
     };
   },
   computed: {
     ...mapGetters(["getUserId"]),
   },
-  watchQuery: ['categoryId','subCategoryId','pageSize','currentPage'],
+  watchQuery: ["categoryId", "subCategoryId", "pageSize", "currentPage"],
   watch: {
-    '$route'(to, from) {
-        console.log('route')
+    $route(to, from) {
+      console.log("route");
       this.categoryId = this.$route.params.categoryId;
       this.subCategoryId = this.$route.query.subCategoryId;
       this.title = this.$route.query.title;
@@ -239,7 +242,7 @@ export default {
     },
   },
   created() {
-      console.log('index created')
+    console.log("index created");
     if (this.$route.params.categoryId) {
       this.categoryId = this.$route.params.categoryId;
     }

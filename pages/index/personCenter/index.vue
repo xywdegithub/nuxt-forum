@@ -67,10 +67,7 @@ export default {
   methods: {
     findSiteUser() {
       this.loading=true
-      let data = {
-        userId: this.getUserId,
-      };
-      findSiteUser(data).then((r) => {
+      findSiteUser(this.getUserId).then((r) => {
         this.loading=false;
         let res = r.data;
         if (res) {
