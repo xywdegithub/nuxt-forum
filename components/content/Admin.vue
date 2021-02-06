@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    <div class="current" v-if="routeName != 'Details'">当前版主</div>
+    <div class="current" v-if="routeName != 'index-details'">当前版主</div>
     <div class="current" v-else>发起人</div>
     <div class="main">
       <el-avatar shape="square" size="large" :src="data.avatar"></el-avatar>
@@ -30,10 +30,6 @@ export default {
         return {};
       },
     },
-  },
-  methods: {},
-  mounted() {
-    console.log(this.routeName);
   },
 };
 </script>

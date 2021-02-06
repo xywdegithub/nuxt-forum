@@ -12,7 +12,7 @@
       <slot name="edit"></slot>
       </div>
     </div>
-    <div class="postContent" v-html='data.content' @click="showImg($event)"></div>
+    <div class="postContent" v-html=HTMLDecode(data.content) @click="showImg($event)"></div>
     <div class="blank"></div>
     <div class="looks">
       <div><slot name="good"></slot></div>
@@ -52,6 +52,15 @@ export default {
     },
   },
   methods: {
+      HTMLDecode(text) {
+      if (process.client) {
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+      }
+    },
      showImg(e) {
       // console.log(e.target)
       if (e.target.tagName == 'IMG') {

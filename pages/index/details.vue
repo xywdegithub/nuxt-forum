@@ -317,6 +317,7 @@ export default {
       articleRes: data,
     };
   },
+  watchQuery: ['postId'],
   data() {
     return {
       loading: false,
@@ -379,8 +380,6 @@ export default {
   },
   methods: {
     dealArticle() {
-      if (this.articleRes.content)
-        this.articleRes.content = this.HTMLDecode(this.articleRes.content);
       this.article = this.articleRes;
       let res = this.articleRes;
       if (res.userName) {
@@ -398,15 +397,6 @@ export default {
         this.selectRecommendPosts();
       }
       this.selectAdvertisementList();
-    },
-    HTMLDecode(text) {
-      if (process.client) {
-        var temp = document.createElement("div");
-        temp.innerHTML = text;
-        var output = temp.innerText || temp.textContent;
-        temp = null;
-        return output;
-      }
     },
     selectPostComment() {
       this.commentLoading = true;
