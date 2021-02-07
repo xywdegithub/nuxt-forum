@@ -1,7 +1,8 @@
 <template>
+    <div class="index" id="index">{{classes}}
   <keep-alive>
-    <div class="index" id="index">
       <classes :data="classes"></classes>
+  </keep-alive>
       <el-row class="content-wrap" v-loading="loading">
         <el-col :span="18" :xs="24" class="posts">
           <template v-if="list.length > 0">
@@ -118,7 +119,6 @@
         </div>
       </div>
     </div>
-  </keep-alive>
 </template>
 
 <script>

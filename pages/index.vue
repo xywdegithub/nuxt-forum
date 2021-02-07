@@ -4,9 +4,7 @@
     <div class="content">
       <el-scrollbar>
         <div class="container responsive">
-          <transition name="move" mode="out-in">
            <nuxt-child/>
-          </transition>
           <el-backtop target=".content"></el-backtop>
         </div>
       </el-scrollbar>

@@ -4,21 +4,16 @@
       <el-col :span="24">
         <ul class="list first-nav">
           <li :class="{ active: categoryId == null }">
-            <nuxt-link :to="{ name: 'index' }">全部</nuxt-link>
+            <nuxt-link :to="{ path: '/' }">全部</nuxt-link>
           </li>
           <li
             :class="{ active: categoryId == item.id }"
             v-for="item in data"
             :key="item.id"
           >
-          <nuxt-link :to="{ name: 'index-categoryId',params:{ categoryId: item.id} }">
+          <nuxt-link :to="{name: 'index-categoryId',params:{ categoryId: item.id} }">
             {{ item.title }}
           </nuxt-link>
-            <!-- <a
-              @click="changeUrl(item.id)"
-              :to="{ query: { categoryId: item.id } }"
-              >{{ item.title }}</a
-            > -->
           </li>
         </ul>
       </el-col>
@@ -98,6 +93,7 @@ export default {
       this.initSub();
     },
     data(val) {
+      console.log('val',val)
       this.data = val;
       this.initSub();
     },
@@ -131,11 +127,6 @@ export default {
         this.limit = 10;
       } else {
         this.limit = 10000;
-      }
-    },
-    changeUrl(categoryId, subCategoryId) {
-      if (categoryId) {
-      this.$router.push({ query: { categoryId: categoryId } })
       }
     },
   },

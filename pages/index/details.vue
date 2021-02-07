@@ -318,6 +318,14 @@ export default {
     };
   },
   watchQuery: ['postId'],
+   watch: {
+    $route(to, from) {
+      this.postId = this.$route.query.postId;
+      this.dealArticle();
+      this.selectPostComment();
+      this.selectPostReportTypeList();
+    },
+  },
   data() {
     return {
       loading: false,
@@ -360,7 +368,21 @@ export default {
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
   },
-  created() {
+  // created() {
+  //   console.log('details ')
+  //   this.postId = this.$route.query.postId;
+  //   this.dealArticle();
+  //   this.selectPostComment();
+  //   this.selectPostReportTypeList();
+  //   if (process.client) {
+  //     if (window.innerWidth < 768) {
+  //       this.dialogWidth = "80%";
+  //     } else {
+  //       this.dialogWidth = "50%";
+  //     }
+  //   }
+  // },
+  mounted(){
     console.log('details ')
     this.postId = this.$route.query.postId;
     this.dealArticle();
@@ -382,6 +404,7 @@ export default {
   methods: {
     dealArticle() {
       this.article = this.articleRes;
+      console.log(this.article)
       let res = this.articleRes;
       if (res.userName) {
         let data = {
