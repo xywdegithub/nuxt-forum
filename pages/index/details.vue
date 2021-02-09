@@ -1,9 +1,9 @@
 <template>
-  <div class="post">
+  <div  class="post">
     <el-row class="content-wrap" v-loading="loading">
       <el-col :span="18" :xs="24" class="posts">
         <div class="details">
-          <v-post :data="article">
+          <v-post  :data="article">
             <template slot="edit" v-if="getUserId == article.userId">
               <a @click="toPost">
                 <i class="iconfont iconbianji edit hidden-xs-only">&nbsp;</i>
@@ -157,11 +157,6 @@
               </div>
             </template>
           </v-reply>
-          <!-- <client-only>
-        <quill-editor
-           :data="content"
-        />
-      </client-only> -->
           <div id="edit">
             <v-editor
               v-if="getUserId"
@@ -262,8 +257,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-  //import quillEditor from "@/components/common/VueQuillEditor.vue";
-
 import vEditor from "@/components/common/Editor.vue";
 import vAdmin from "@/components/content/Admin.vue";
 import vPost from "@/components/content/Post.vue";
@@ -295,14 +288,14 @@ export default {
           hid: "keywords",
           name: "keywords",
           content:
-            this.articleRes.parentCategoryName +
+            this.article.parentCategoryName +
             " " +
-            this.articleRes.categoryName,
+            this.article.categoryName,
         },
         {
           hid: "description",
           name: "description",
-          content: this.articleRes.content,
+          content: this.article.content,
         },
       ],
     };
@@ -312,15 +305,26 @@ export default {
       postId: query.postId,
     };
     const { data } = await findPost(postData);
+    let admin=null;
+      if (data.userName) {
+        admin = {
+          avatar: data.userIcon,
+          userName: data.userName,
+          introduction: data.introduction,
+          answerNumber: data.answerNumber,
+          agreeNumber: data.agreeNumber,
+          postNumber: data.postNumber,
+        };
+      }
     return {
       title: data.title,
-      articleRes: data,
+      article: data,
+      admin,
+      postId:query.postId
     };
   },
-  watchQuery: ['postId'],
    watch: {
     $route(to, from) {
-      this.postId = this.$route.query.postId;
       this.dealArticle();
       this.selectPostComment();
       this.selectPostReportTypeList();
@@ -358,6 +362,7 @@ export default {
       submitDisable: false,
     };
   },
+    watchQuery: ['postId'],
   components: {
     vAdmin,
     vPost,
@@ -368,22 +373,7 @@ export default {
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
   },
-  // created() {
-  //   console.log('details ')
-  //   this.postId = this.$route.query.postId;
-  //   this.dealArticle();
-  //   this.selectPostComment();
-  //   this.selectPostReportTypeList();
-  //   if (process.client) {
-  //     if (window.innerWidth < 768) {
-  //       this.dialogWidth = "80%";
-  //     } else {
-  //       this.dialogWidth = "50%";
-  //     }
-  //   }
-  // },
-  mounted(){
-    console.log('details ')
+  created() {
     this.postId = this.$route.query.postId;
     this.dealArticle();
     this.selectPostComment();
@@ -403,23 +393,7 @@ export default {
   },
   methods: {
     dealArticle() {
-      this.article = this.articleRes;
-      console.log(this.article)
-      let res = this.articleRes;
-      if (res.userName) {
-        let data = {
-          avatar: res.userIcon,
-          userName: res.userName,
-          introduction: res.introduction,
-          answerNumber: res.answerNumber,
-          agreeNumber: res.agreeNumber,
-          postNumber: res.postNumber,
-        };
-        this.admin = data;
-      }
-      if (this.recommendPosts.length == 0) {
         this.selectRecommendPosts();
-      }
       this.selectAdvertisementList();
     },
     selectPostComment() {

@@ -51,6 +51,11 @@ export default {
       },
     },
   },
+   watch: {
+    data(val) {
+      this.data = val;
+    },
+  },
   methods: {
       HTMLDecode(text) {
       if (process.client) {

@@ -1,8 +1,7 @@
 <template>
-    <div class="index" id="index">{{classes}}
-  <keep-alive>
-      <classes :data="classes"></classes>
-  </keep-alive>
+<keep-alive>
+    <div   keep-alive class="index" id="index">
+      <classes keep-alive  :data="classes"></classes>
       <el-row class="content-wrap" v-loading="loading">
         <el-col :span="18" :xs="24" class="posts">
           <template v-if="list.length > 0">
@@ -119,6 +118,7 @@
         </div>
       </div>
     </div>
+</keep-alive>
 </template>
 
 <script>
@@ -220,10 +220,8 @@ export default {
   computed: {
     ...mapGetters(["getUserId"]),
   },
-  watchQuery: ["categoryId", "subCategoryId", "pageSize", "currentPage"],
   watch: {
     $route(to, from) {
-      console.log("route");
       this.categoryId = this.$route.params.categoryId;
       this.subCategoryId = this.$route.query.subCategoryId;
       this.title = this.$route.query.title;
@@ -242,7 +240,6 @@ export default {
     },
   },
   created() {
-    console.log("index created");
     if (this.$route.params.categoryId) {
       this.categoryId = this.$route.params.categoryId;
     }
@@ -490,7 +487,6 @@ export default {
       this.currentPage = val;
       this.selectPosts();
       this.$route.param;
-      console.log(this.$route.param);
     },
   },
 };

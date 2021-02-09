@@ -2,7 +2,7 @@
   <div class="recommendPost">
     <div class="text">相关推荐</div>
     <li v-for="(item,key) in data" :key="key">
-      <nuxt-link :to="{
+      <nuxt-link key="key" :to="{
                     name: 'index-details',
                     query: { postId: item.postId },
                   }">{{item.title}}</nuxt-link>

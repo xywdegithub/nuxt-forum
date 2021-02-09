@@ -41,8 +41,6 @@ export default {
   methods: {
     seteditor() {
        const E= require('wangeditor')
-    console.log(this.$refs.editor)
-    console.log(E)
       this.editor = new E(this.$refs.editor);
       this.editor.config.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.config.uploadImgServer =
