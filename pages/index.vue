@@ -4,7 +4,7 @@
     <div class="content">
       <el-scrollbar>
         <div class="container responsive">
-           <nuxt-child/>
+            <nuxt-child keep-alive :keep-alive-props="{ exclude: ['index-details'] }"  />
           <el-backtop target=".content"></el-backtop>
         </div>
       </el-scrollbar>

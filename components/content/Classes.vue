@@ -67,6 +67,7 @@
 </template>
 <script>
 export default {
+    name:'classes',
   data() {
     return {
       routeName: this.$route.name,
@@ -85,7 +86,6 @@ export default {
       },
     },
   },
-  watchQuery: ['categoryId'],
   watch: {
     $route(to, from) {
       this.categoryId = this.$route.params.categoryId;

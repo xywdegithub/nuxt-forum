@@ -280,6 +280,7 @@ import {
   deleteByPost,
 } from "@/network/index.js";
 export default {
+  name:'index-details',
   head() {
     return {
       title: this.title,
@@ -698,7 +699,6 @@ export default {
         });
     },
     beforeComent(userId, parentCommentId, currentData, subData) {
-      console.log(userId);
       this.anchor();
       this.parentCommentId = parentCommentId;
       this.commentUserId = userId;

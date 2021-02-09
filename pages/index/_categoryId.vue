@@ -1,6 +1,5 @@
 <template>
-<keep-alive>
-    <div   keep-alive class="index" id="index">
+    <div  class="index" id="index">
       <classes keep-alive  :data="classes"></classes>
       <el-row class="content-wrap" v-loading="loading">
         <el-col :span="18" :xs="24" class="posts">
@@ -118,7 +117,6 @@
         </div>
       </div>
     </div>
-</keep-alive>
 </template>
 
 <script>
@@ -144,6 +142,7 @@ import {
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
+  name:'index',
   validate({ params }) {
     if (params.categoryId) {
       return /^\d+$/.test(params.categoryId);
@@ -204,6 +203,7 @@ export default {
     vAdmin,
   },
   async asyncData({ params }) {
+    if(!process.server) return;
     const {
       siteAnnotation,
       siteIntroduction,
