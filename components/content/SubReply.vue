@@ -1,6 +1,6 @@
 <template>
   <div class="subDiv" v-if="data.length>0">
-    <div class="subReply" v-if="subKey < count"  v-for="(subItem, subKey) in data" :key="subKey">
+    <div :ref="subItem.postCommentId" class="subReply" v-if="subKey < count"  v-for="(subItem, subKey) in data" :key="subKey">
         <div class="con" :class="{border:subKey!=data.length-1 && subItem}">
           <div class="avatar">
             <el-avatar

@@ -1,7 +1,7 @@
 <template>
   <div class="replys">
-    <div class="reply" v-for="(item, key) in data" :key="key">
-      <div class="con">
+    <div  class="reply" v-for="(item, key) in data" :key="key" :ref="item.postCommentId">
+      <div class="con" >
         <div class="avatar">
           <el-avatar
             shape="square"
@@ -19,11 +19,12 @@
           <slot name="options" :data="item"></slot>
         </div>
         <div>
+          <slot name="editanddelete" :data="item"></slot>
           <span class="time">{{ item.createDate }}</span>
         </div>
       </div>
       <template v-if="item.commentList">
-        <sub-reply :data="item.commentList">
+        <sub-reply :ref="'subReply_'+item.postCommentId"  :data="item.commentList">
           <template slot-scope="scope" slot="subReply">
             <slot name="subReply" :data="scope.data" :parent="item"></slot>
           </template>

@@ -1,5 +1,5 @@
 <template>
-  <div class="search" id="search">
+  <div class="search" id="search" ref="search">
     <el-row class="content-wrap" v-loading="loading">
       <el-col :span="24" class="posts">
         <div class="nav hidden-xs-only">
@@ -75,7 +75,14 @@ export default {
   watch: {
     $route(to, from) {
       this.title = this.$route.query.title;
-      this.currentPage = 1;
+       if (this.$route.query.currentPage)
+        this.currentPage = parseInt(this.$route.query.currentPage);
+      else this.currentPage = 1;
+      if (this.$route.query.pageSize)
+        this.pageSize = parseInt(this.$route.query.pageSize);
+      else this.pageSize = 20;
+      if(this.$refs.search)
+      this.$refs.search.scrollIntoView(false);
       this.selectPosts();
     },
   },
@@ -83,6 +90,14 @@ export default {
     if (this.$route.query.title) {
       this.title = this.$route.query.title;
     }
+     if (this.$route.query.currentPage)
+        this.currentPage = parseInt(this.$route.query.currentPage);
+      else this.currentPage = 1;
+      if (this.$route.query.pageSize)
+        this.pageSize = parseInt(this.$route.query.pageSize);
+      else this.pageSize = 20;
+      if(this.$refs.search)
+      this.$refs.search.scrollIntoView(false);
     this.selectPosts();
   },
   computed: {
@@ -96,6 +111,7 @@ export default {
         userId: this.getUserId,
         pageSize: this.pageSize,
         pageNum: this.currentPage,
+        isShowHome:1
       };
       selectPosts(data).then((r) => {
         this.loading = false;
@@ -117,12 +133,27 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.selectPosts();
+     this.$router.push({
+          name: "index-search",
+          query: {
+            title:this.title,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
     },
     handleCurrentChange(val) {
-      location.href = "#index";
+     // location.href = "#index";
       this.currentPage = val;
-      this.selectPosts();
+        this.$router.push({
+          name: "index-search",
+          query: {
+            title:this.title,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+     // this.selectPosts();
     },
   },
 };

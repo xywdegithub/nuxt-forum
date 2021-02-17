@@ -5,7 +5,7 @@ export default ({ app, store,redirect }) => {
     app.router.beforeEach((to, from, next) => {
         if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
             if(getToken()){ //判断本地是否存在access_token
-                redirect();
+                next();
             }else {
                 redirect({
                 name:'index'
@@ -22,7 +22,7 @@ export default ({ app, store,redirect }) => {
               path:from.fullPath
              });
             }else {
-                redirect();
+                next();
             }
            }
     })

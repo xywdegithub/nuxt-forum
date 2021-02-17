@@ -85,7 +85,9 @@ export default {
   },
   methods: {
     readMessage(item) {
-      let data = {
+      console.log(item)
+      if(item.state==0){
+ let data = {
         messageId: item.messageId,
       };
       selectOneMessage(data).then((r) => {
@@ -98,6 +100,10 @@ export default {
             console.log(err)
           });
       });
+      }else{
+             this.$router.push({ name: "index-details", query: { postId: item.postId } });
+
+      }
     },
   },
   mounted() {},

@@ -1,9 +1,9 @@
 <template>
-  <div  class="post">
+  <div class="post">
     <el-row class="content-wrap" v-loading="loading">
       <el-col :span="18" :xs="24" class="posts">
         <div class="details">
-          <v-post  :data="article">
+          <v-post :data="article">
             <template slot="edit" v-if="getUserId == article.userId">
               <a @click="toPost">
                 <i class="iconfont iconbianji edit hidden-xs-only">&nbsp;</i>
@@ -57,7 +57,7 @@
               >按赞排序</el-button
             >
           </div>
-          <v-reply :data="replys">
+          <v-reply :data="replys" ref="reply">
             <template v-slot:options="data" v-if="getUserId">
               <a
                 v-if="data.data.isLike == true"
@@ -99,21 +99,18 @@
                 <i class="iconfont iconpinglun"></i> 评论</a
               >
             </template>
-            <!-- <template slot-scope="scope" slot="reply">
-              <a @click="anchor">
-                <el-button
-                  size="mini"
-                  @click="
-                    beforeComent(
-                      scope.data.commentatorId,
-                      scope.data.postCommentId,
-                      scope.data
-                    )
-                  "
-                  >回复</el-button
-                >
-              </a>
-            </template> -->
+            <template v-slot:editanddelete="scope">
+              <span v-if="getUserId && getUserId==scope.data.commentatorId">
+              <a class="optionsMore" @click="editComment(scope.data)">
+                <i class="iconfont iconbianji1"></i>
+                编辑</a
+              >
+              <a class="optionsMore danger" @click="deleteComment(scope.data)">
+                <i class="iconfont iconshanchu"></i>
+                删除</a
+              >
+              </span>
+            </template>
             <template slot-scope="scope" slot="subReply">
               <a
                 class="options comment-my"
@@ -128,20 +125,6 @@
               >
                 <i class="iconfont iconpinglun"></i> 评论</a
               >
-              <!-- <a @click="anchor">
-                <el-button
-                  size="mini"
-                  @click="
-                    beforeComent(
-                      scope.data.commentatorId,
-                      scope.parent.postCommentId,
-                      scope.parent,
-                      scope.data
-                    )
-                  "
-                  >回复</el-button
-                >
-              </a> -->
             </template>
             <template slot="loadmore">
               <div v-show="replys.length != 0">
@@ -280,7 +263,7 @@ import {
   deleteByPost,
 } from "@/network/index.js";
 export default {
-  name:'index-details',
+  name: "index-details",
   head() {
     return {
       title: this.title,
@@ -289,9 +272,7 @@ export default {
           hid: "keywords",
           name: "keywords",
           content:
-            this.article.parentCategoryName +
-            " " +
-            this.article.categoryName,
+            this.article.parentCategoryName + " " + this.article.categoryName,
         },
         {
           hid: "description",
@@ -306,25 +287,25 @@ export default {
       postId: query.postId,
     };
     const { data } = await findPost(postData);
-    let admin=null;
-      if (data.userName) {
-        admin = {
-          avatar: data.userIcon,
-          userName: data.userName,
-          introduction: data.introduction,
-          answerNumber: data.answerNumber,
-          agreeNumber: data.agreeNumber,
-          postNumber: data.postNumber,
-        };
-      }
+    let admin = null;
+    if (data.userName) {
+      admin = {
+        avatar: data.userIcon,
+        userName: data.userName,
+        introduction: data.introduction,
+        answerNumber: data.answerNumber,
+        agreeNumber: data.agreeNumber,
+        postNumber: data.postNumber,
+      };
+    }
     return {
       title: data.title,
       article: data,
       admin,
-      postId:query.postId
+      postId: query.postId,
     };
   },
-   watch: {
+  watch: {
     $route(to, from) {
       this.dealArticle();
       this.selectPostComment();
@@ -359,17 +340,18 @@ export default {
       commentLoading: false,
       recommendPosts: [],
       currentReply: {},
+      subData: {},
       dialogWidth: "50%",
       submitDisable: false,
     };
   },
-    watchQuery: ['postId'],
+  watchQuery: ["postId"],
   components: {
     vAdmin,
     vPost,
     vReply,
     recommendPosts,
-    vEditor
+    vEditor,
   },
   computed: {
     ...mapGetters(["getUserId", "getToken"]),
@@ -394,7 +376,7 @@ export default {
   },
   methods: {
     dealArticle() {
-        this.selectRecommendPosts();
+      this.selectRecommendPosts();
       this.selectAdvertisementList();
     },
     selectPostComment() {
@@ -507,6 +489,15 @@ export default {
         this.content = "";
         this.submitDisable = false;
         this.$refs.editor.editor.txt.clear();
+        if (this.subData) {
+          this.$refs.reply.$refs[
+            "subReply_" + this.currentReply.postCommentId
+          ][0].$refs[this.subData.postCommentId][0].scrollIntoView(false);
+        } else if (this.currentReply) {
+          this.$refs.reply.$refs[
+            this.currentReply.postCommentId
+          ][0].scrollIntoView(false);
+        }
         if (res && res.data) {
           if (this.parentCommentId == 0) {
             if (this.replys.length >= this.commentPage.total) {
@@ -703,15 +694,17 @@ export default {
       this.parentCommentId = parentCommentId;
       this.commentUserId = userId;
       this.currentReply = currentData;
+      this.subData = subData;
       if (userId != 0) {
-        if (subData)
+        if (subData) {
           this.$refs.editor.editor.txt.html(
             "<span>@" + subData.commentatorName + ":<span>"
           );
-        else
+        } else {
           this.$refs.editor.editor.txt.html(
             "<span>@" + currentData.commentatorName + ":<span>"
           );
+        }
       } else {
         this.$refs.editor.editor.txt.html("<span><span>");
       }
@@ -729,6 +722,8 @@ export default {
         }
       });
     },
+    editComment(item) {},
+    deleteComment(item) {},
     toPost() {
       this.$router.push({
         name: "Post",
@@ -877,6 +872,15 @@ export default {
   font-size: 12px;
   color: #409eff;
   background: rgb(217, 237, 255);
+}
+.optionsMore {
+  padding: 6px 4px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #409eff;
+}
+.danger{
+  color: #f56c6c;
 }
 .options i {
   font-size: 12px;

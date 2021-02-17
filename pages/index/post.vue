@@ -46,6 +46,10 @@
                   @change="changeEditor"
                 ></v-editor>
               </el-form-item>
+               <el-form-item label="">
+               <el-checkbox :true-label=0 :false-label=1 v-model="form.isShowHome">不显示论坛主页<span v-if="form.isShowHome==0">（勾选后您的文章将不显示在主页，只显示在当前分类板块的页面中。）</span></el-checkbox>
+              </el-form-item>
+               
               <div class="submit">
                 <el-button
                   type="primary"
@@ -103,6 +107,7 @@ export default {
         content: "",
         postSubcategoryId: "",
         releaseType: "QUESTION",
+        isShowHome:1
       },
       submitDisable: false,
     };

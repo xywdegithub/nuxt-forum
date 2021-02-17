@@ -1,122 +1,122 @@
 <template>
-    <div  class="index" id="index">
-      <classes keep-alive  :data="classes"></classes>
-      <el-row class="content-wrap" v-loading="loading">
-        <el-col :span="18" :xs="24" class="posts">
-          <template v-if="list.length > 0">
-            <div
-              class="nav hidden-xs-only"
-              v-if="subCategoryId || categoryId || title"
-            >
-              <span v-if="title" class="nav_title">{{ title }}</span>
-              <span v-else class="nav_title">{{ currentType }}</span>
-              <div class="postDetails" v-if="category">
-                <div class="postNum">
-                  共有 <span class="number">{{ category.postNumber }}</span
-                  >个讨论主题
-                </div>
-                <!-- <div class="postDesc" >
+  <div class="index" id="index" ref="index">
+    <classes  :data="classes"></classes>
+    <el-row class="content-wrap" v-loading="loading">
+      <el-col :span="18" :xs="24" class="posts">
+        <template v-if="list.length > 0">
+          <div
+            class="nav hidden-xs-only"
+            v-if="subCategoryId || categoryId || title"
+          >
+            <span v-if="title" class="nav_title">{{ title }}</span>
+            <span v-else class="nav_title">{{ currentType }}</span>
+            <div class="postDetails" v-if="category">
+              <div class="postNum">
+                共有 <span class="number">{{ category.postNumber }}</span
+                >个讨论主题
+              </div>
+              <!-- <div class="postDesc" >
                 {{ category.description }}1111111111
               </div> -->
-              </div>
-            </div>
-            <div class="nav hidden-xs-only" v-else>
-              <span class="nav_title">
-                <i class="iconfont iconlist"></i>&nbsp;发现</span
-              >
-            </div>
-            <v-invitation class="contain" :data="list">
-              <template slot-scope="scope">
-                <div
-                  v-if="scope.item.commentNumber"
-                  class="replyCount hidden-xs-only"
-                  @click.stop.prevent="replyData(scope.item)"
-                >
-                  <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
-                  <a v-else>{{ scope.item.commentNumber }}</a>
-                </div>
-                <div
-                  class="hidden-sm-and-up mobile_replyCount"
-                  @click.stop.prevent="replyData(scope.item)"
-                >
-                  <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
-                  <a v-else>{{ scope.item.commentNumber }}</a>
-                </div>
-              </template>
-            </v-invitation>
-          </template>
-          <template v-else>
-            <div class="noData">暂无数据</div>
-          </template>
-        </el-col>
-        <el-col :span="6" class="hidden-xs-only">
-          <div class="info">
-            <div class="adminAbout infoShow" v-if="subCategoryId">
-              <template v-if="admin">
-                <v-admin :data="admin">
-                  <div class="require">
-                    <div class="requireItem">
-                      <div>发帖</div>
-                      <div class="mineCount">{{ admin.postNumber }}</div>
-                    </div>
-                    <div class="requireItem">
-                      <div>被赞</div>
-                      <div class="mineCount">{{ admin.agreeNumber }}</div>
-                    </div>
-                  </div>
-                </v-admin>
-              </template>
-              <template v-else>
-                <div class="applyM">
-                  <div class="currentClass">{{ currentType }}</div>
-                  <el-button type="primary" size="small" @click="moderatorApply"
-                    >申请版主</el-button
-                  >
-                </div>
-              </template>
-            </div>
-            <v-announcement :data="siteIntroduction"></v-announcement>
-            <v-announcement :data="announcement"></v-announcement>
-            <v-statistics class="statistic" :data="statistics"></v-statistics>
-            <div v-if="advs">
-              <div class="adv" v-for="item in advs" :key="item.advertisementId">
-                <a v-if="item.image" @click="advertiseClick(item)">
-                  <img :src="item.image" />
-                </a>
-              </div>
             </div>
           </div>
-        </el-col>
-      </el-row>
-
-      <el-pagination
-        class="hidden-xs-only"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[20, 50, 100]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-      ></el-pagination>
-      <el-pagination
-        class="hidden-sm-and-up mobile_pagination"
-        small
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout="total, prev, next, jumper"
-        :total="total"
-      ></el-pagination>
-      <div v-if="advs" class="hidden-sm-and-up mobile_adv">
-        <div class="adv" v-for="item in advs" :key="item.advertisementId">
-          <a v-if="item.image" @click="advertiseClick(item)">
-            <img :src="item.image" />
-          </a>
+          <div class="nav hidden-xs-only" v-else>
+            <span class="nav_title">
+              <i class="iconfont iconlist"></i>&nbsp;发现</span
+            >
+          </div>
+          <v-invitation class="contain" :data="list">
+            <template slot-scope="scope">
+              <div
+                v-if="scope.item.commentNumber"
+                class="replyCount hidden-xs-only"
+                @click.stop.prevent="replyData(scope.item)"
+              >
+                <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
+                <a v-else>{{ scope.item.commentNumber }}</a>
+              </div>
+              <div
+                class="hidden-sm-and-up mobile_replyCount"
+                @click.stop.prevent="replyData(scope.item)"
+              >
+                <a v-if="scope.item.commentNumber > 99">{{ "99+" }}</a>
+                <a v-else>{{ scope.item.commentNumber }}</a>
+              </div>
+            </template>
+          </v-invitation>
+        </template>
+        <template v-else>
+          <div class="noData">暂无数据</div>
+        </template>
+      </el-col>
+      <el-col :span="6" class="hidden-xs-only">
+        <div class="info">
+          <div class="adminAbout infoShow" v-if="subCategoryId">
+            <template v-if="admin">
+              <v-admin :data="admin">
+                <div class="require">
+                  <div class="requireItem">
+                    <div>发帖</div>
+                    <div class="mineCount">{{ admin.postNumber }}</div>
+                  </div>
+                  <div class="requireItem">
+                    <div>被赞</div>
+                    <div class="mineCount">{{ admin.agreeNumber }}</div>
+                  </div>
+                </div>
+              </v-admin>
+            </template>
+            <template v-else>
+              <div class="applyM">
+                <div class="currentClass">{{ currentType }}</div>
+                <el-button type="primary" size="small" @click="moderatorApply"
+                  >申请版主</el-button
+                >
+              </div>
+            </template>
+          </div>
+          <v-announcement :data="siteIntroduction"></v-announcement>
+          <v-announcement :data="announcement"></v-announcement>
+          <v-statistics class="statistic" :data="statistics"></v-statistics>
+          <div v-if="advs">
+            <div class="adv" v-for="item in advs" :key="item.advertisementId">
+              <a v-if="item.image" @click="advertiseClick(item)">
+                <img :src="item.image" />
+              </a>
+            </div>
+          </div>
         </div>
+      </el-col>
+    </el-row>
+
+    <el-pagination
+      class="hidden-xs-only"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[20, 50, 100]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
+    <el-pagination
+      class="hidden-sm-and-up mobile_pagination"
+      small
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      layout="total, prev, next, jumper"
+      :total="total"
+    ></el-pagination>
+    <div v-if="advs" class="hidden-sm-and-up mobile_adv">
+      <div class="adv" v-for="item in advs" :key="item.advertisementId">
+        <a v-if="item.image" @click="advertiseClick(item)">
+          <img :src="item.image" />
+        </a>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -142,7 +142,7 @@ import {
 import { allSiteConfig } from "@/network/website.js";
 
 export default {
-  name:'index',
+  name: "index",
   validate({ params }) {
     if (params.categoryId) {
       return /^\d+$/.test(params.categoryId);
@@ -203,7 +203,7 @@ export default {
     vAdmin,
   },
   async asyncData({ params }) {
-    if(!process.server) return;
+    if (!process.server) return;
     const {
       siteAnnotation,
       siteIntroduction,
@@ -226,8 +226,13 @@ export default {
       this.subCategoryId = this.$route.query.subCategoryId;
       this.title = this.$route.query.title;
       if (this.$route.query.currentPage)
-        this.currentPage = this.$route.query.currentPage;
+        this.currentPage = parseInt(this.$route.query.currentPage);
       else this.currentPage = 1;
+      if (this.$route.query.pageSize)
+        this.pageSize = parseInt(this.$route.query.pageSize);
+      else this.pageSize = 20;
+      if(this.$refs.index)
+      this.$refs.index.scrollIntoView(false);
       this.selectPosts();
       this.getType();
       this.findCategory();
@@ -246,6 +251,12 @@ export default {
     if (this.$route.query.subCategoryId) {
       this.subCategoryId = this.$route.query.subCategoryId;
     }
+    if (this.$route.query.currentPage)
+      this.currentPage = parseInt(this.$route.query.currentPage);
+    else this.currentPage = 1;
+    if (this.$route.query.pageSize)
+      this.pageSize = parseInt(this.$route.query.pageSize);
+    else this.pageSize = 20;
     this.findCategoryTree();
     this.selectPosts();
     this.selectSiteStatic();
@@ -282,6 +293,7 @@ export default {
         userId: this.getUserId,
         pageSize: this.pageSize,
         pageNum: this.currentPage,
+        isShowHome:1
       };
       selectPosts(data).then((r) => {
         this.loading = false;
@@ -373,12 +385,6 @@ export default {
         }
       });
     },
-    // selectSiteAnnotation() {
-    //   selectSiteAnnotation().then((r) => {
-    //     let res = r.data;
-    //     this.announcement = res;
-    //   });
-    // },
     selectSiteStatic() {
       selectSiteStatic().then((r) => {
         let res = r.data;
@@ -391,14 +397,6 @@ export default {
         }
       });
     },
-    // findFeaturedCategory() {
-    //   findFeaturedCategory().then((r) => {
-    //     let res = r.data;
-    //     if (res) {
-    //       this.featuredList = res;
-    //     }
-    //   });
-    // },
     replyData(item) {
       this.$router.push({
         path: "/details",
@@ -480,13 +478,67 @@ export default {
     },
     handleSizeChange(val) {
       this.pageSize = val;
-      this.selectPosts();
+      if (this.subCategoryId)
+        this.$router.push({
+          name: "index-categoryId",
+          params: { categoryId: this.categoryId },
+          query: {
+            subCategoryId: this.subCategoryId,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+      else if (this.categoryId)
+        this.$router.push({
+          name: "index-categoryId",
+          params: { categoryId: this.categoryId },
+          query: {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+      else
+        this.$router.push({
+          path: "/",
+          query: {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
     },
     handleCurrentChange(val) {
-      location.href = "#index";
       this.currentPage = val;
-      this.selectPosts();
-      this.$route.param;
+      if (this.subCategoryId)
+        this.$router.push({
+          name: "index-categoryId",
+          params: { categoryId: this.categoryId },
+          query: {
+            subCategoryId: this.subCategoryId,
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+      else if (this.categoryId)
+        this.$router.push({
+          name: "index-categoryId",
+          params: { categoryId: this.categoryId },
+          query: {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+      else
+        this.$router.push({
+          path: "/",
+          query: {
+            currentPage: this.currentPage,
+            pageSize: this.pageSize,
+          },
+        });
+
+      // this.currentPage = val;
+      // this.selectPosts();
+      // this.$route.param;
     },
   },
 };

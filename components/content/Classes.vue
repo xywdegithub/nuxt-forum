@@ -93,7 +93,6 @@ export default {
       this.initSub();
     },
     data(val) {
-      console.log('val',val)
       this.data = val;
       this.initSub();
     },
