@@ -15,13 +15,14 @@
             ><span class="name"> {{ subItem.commentUserName }}</span>
             <div class="details" v-html="subItem.content" @click="showImg($event)"></div>
             <div class="subOpts">
-              <slot name="subReply" :data="subItem"></slot>
-              <span class="time">{{ subItem.createDate }}</span>
+              <div><slot name="subReply" :data="subItem"></slot></div>
+               <div>
+                 <slot name="subReplyEdit" :data="subItem"></slot><span class="time">{{ subItem.createDate }}</span></div>
             </div>
           </div>
         </div>
     </div>
-    <div v-if="data.length > count" class="more" @click="count = 1000">
+    <div v-if="data.length > count" class="more" @click="count = 10000">
       显示更多
     </div>
 

@@ -90,7 +90,6 @@ export default {
   },
   methods: {
     login(formName) {
-      console.log( this.$refs[formName])
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.loading = true;

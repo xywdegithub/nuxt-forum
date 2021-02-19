@@ -4,7 +4,7 @@
       <el-col :span="18" :xs="24" class="posts">
         <div class="details">
           <v-post :data="article">
-            <template slot="edit" v-if="getUserId == article.userId">
+            <template slot="edit" v-if="(getUserId && getUserId == article.userId) || getIsAdmin">
               <a @click="toPost">
                 <i class="iconfont iconbianji edit hidden-xs-only">&nbsp;</i>
                 <i class="iconfont iconbianji mobile_edit hidden-sm-and-up"
@@ -46,7 +46,7 @@
           <div class="comment">
             <div class="comment-left">
               <span class="replyCount">{{ article.commentNumber }}个评论</span>
-              <a @click="beforeComent(0, 0)"> 我要评论 </a>
+              <a @click="beforeComent(0, 0, null, null, false)"> 我要评论 </a>
             </div>
             <el-button
               v-if="replys.length > 0"
@@ -92,23 +92,65 @@
                   beforeComent(
                     data.data.commentatorId,
                     data.data.postCommentId,
-                    data.data
+                    data.data,
+                    null,
+                    false
                   )
                 "
               >
-                <i class="iconfont iconpinglun"></i> 评论</a
+                <i class="iconfont iconpinglun"></i><span class="hidden-xs-only">评论</span> </a
               >
             </template>
             <template v-slot:editanddelete="scope">
-              <span v-if="getUserId && getUserId==scope.data.commentatorId">
-              <a class="optionsMore" @click="editComment(scope.data)">
-                <i class="iconfont iconbianji1"></i>
-                编辑</a
-              >
-              <a class="optionsMore danger" @click="deleteComment(scope.data)">
-                <i class="iconfont iconshanchu"></i>
-                删除</a
-              >
+              <span v-if="(getUserId && getUserId == scope.data.commentatorId) || getIsAdmin">
+                <a
+                  class="optionsMore"
+                  @click="
+                    beforeComent(
+                      scope.data.commentatorId,
+                      scope.data.postCommentId,
+                      scope.data,
+                      null,
+                      true
+                    )
+                  "
+                >
+                  <i class="iconfont iconbianji1"></i>
+                  <span class="hidden-xs-only">编辑</span></a
+                >
+                <a
+                  class="optionsMore danger"
+                  @click="deleteComment(scope.data)"
+                >
+                  <i class="iconfont iconshanchu"></i>
+                  <span class="hidden-xs-only">删除</span></a
+                >
+              </span>
+            </template>
+            <template slot-scope="scope" slot="subReplyEdit">
+              <span v-if="(getUserId && getUserId == scope.data.commentatorId) || getIsAdmin">
+                <a
+                  class="optionsMore"
+                  @click="
+                    beforeComent(
+                      scope.data.commentatorId,
+                      scope.parent.postCommentId,
+                      scope.parent,
+                      scope.data,
+                      true
+                    )
+                  "
+                >
+                  <i class="iconfont iconbianji1"></i>
+                  <span class="hidden-xs-only">编辑</span></a
+                >
+                <a
+                  class="optionsMore danger"
+                  @click="deleteComment(scope.data)"
+                >
+                  <i class="iconfont iconshanchu"></i>
+                  <span class="hidden-xs-only">删除</span></a
+                >
               </span>
             </template>
             <template slot-scope="scope" slot="subReply">
@@ -119,11 +161,12 @@
                     scope.data.commentatorId,
                     scope.parent.postCommentId,
                     scope.parent,
-                    scope.data
+                    scope.data,
+                    false
                   )
                 "
               >
-                <i class="iconfont iconpinglun"></i> 评论</a
+                <i class="iconfont iconpinglun"></i> <span class="hidden-xs-only">评论</span></a
               >
             </template>
             <template slot="loadmore">
@@ -261,6 +304,8 @@ import {
   dislikePostComment,
   findOne,
   deleteByPost,
+  updateComment,
+  deleteComment,
 } from "@/network/index.js";
 export default {
   name: "index-details",
@@ -307,6 +352,7 @@ export default {
   },
   watch: {
     $route(to, from) {
+      this.postId = this.$route.query.postId;
       this.dealArticle();
       this.selectPostComment();
       this.selectPostReportTypeList();
@@ -343,6 +389,7 @@ export default {
       subData: {},
       dialogWidth: "50%",
       submitDisable: false,
+      isEdit: false,
     };
   },
   watchQuery: ["postId"],
@@ -354,7 +401,7 @@ export default {
     vEditor,
   },
   computed: {
-    ...mapGetters(["getUserId", "getToken"]),
+    ...mapGetters(["getUserId", "getToken","getIsAdmin"]),
   },
   created() {
     this.postId = this.$route.query.postId;
@@ -428,6 +475,101 @@ export default {
         this.faviorPost();
       }
     },
+    deleteComment(item) {
+      this.$confirm("确定删除该评论?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          var data = {
+            postCommentId: item.postCommentId
+          };
+          deleteComment(data).then((res) => {
+        if(this.replys.length>0){
+          for(let i in this.replys){
+            if(this.replys[i].postCommentId==item.postCommentId){
+              this.replys.splice(i,1)
+              break;
+            }
+            if(this.replys[i].commentList && this.replys[i].commentList.length>0){
+              for(let j in this.replys[i].commentList){
+                if(this.replys[i].commentList[j].postCommentId==item.postCommentId){
+                  this.replys[i].commentList.splice(j,1)
+                }
+              }
+            }
+          }
+        }
+            this.$message({
+              type: "success",
+              message: "删除成功",
+            });
+
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    updateComment() {
+      if (!this.getToken) {
+        this.$message({
+          message: "请先登录",
+          type: "warning",
+        });
+        return;
+      }
+      if (!this.content || !this.delHTML(this.content)) {
+        this.$message({
+          message: "请输入内容",
+          type: "warning",
+        });
+        return;
+      }
+      this.submitDisable = true;
+      let data = {
+        content: this.htmlEncode(this.content),
+        postCommentId: this.subData
+          ? this.subData.postCommentId
+          : this.currentReply.postCommentId,
+      };
+      updateComment(data).then((res) => {
+        this.$message({
+          message: "编辑评论成功！",
+          type: "success",
+        });
+        this.content = "";
+        this.submitDisable = false;
+        this.$refs.editor.editor.txt.clear();
+        if (this.subData) {
+          this.$refs.reply.$refs[
+            "subReply_" + this.currentReply.postCommentId
+          ][0].$refs[this.subData.postCommentId][0].scrollIntoView(false);
+        } else if (this.currentReply) {
+          this.$refs.reply.$refs[
+            this.currentReply.postCommentId
+          ][0].scrollIntoView(false);
+        }
+        if (res && res.data) {
+          if (this.subData) {
+            this.subData.content = this.htmlEncode(res.data.content);
+          } else if (this.currentReply) {
+            this.currentReply.content = this.htmlEncode(res.data.content);
+          }
+          // if (this.parentCommentId == 0) {
+          //   if (this.replys.length >= this.commentPage.total) {
+          //     this.replys.push(res.data);
+          //   }
+          // } else {
+          //   this.currentReply.commentList.push(res.data);
+          // }
+        }
+      });
+    },
     faviorPost() {
       let data = {
         postId: this.postId,
@@ -473,6 +615,10 @@ export default {
         });
         return;
       }
+      if (this.isEdit) {
+        this.updateComment();
+        return;
+      }
       this.submitDisable = true;
       let data = {
         postId: this.postId,
@@ -504,19 +650,30 @@ export default {
               this.replys.push(res.data);
             }
           } else {
+            if(this.currentReply.commentList){
             this.currentReply.commentList.push(res.data);
+            }else{
+            this.currentReply.commentList=[res.data];
+            }
           }
         }
       });
     },
-    htmlEncode(html) {
-      let temp = document.createElement("div");
-      temp.textContent != undefined
-        ? (temp.textContent = html)
-        : (temp.innerText = html);
-      var output = temp.innerHTML;
-      temp = null;
-      return output;
+    htmlEncode(text) {
+      // let temp = document.createElement("div");
+      // temp.textContent != undefined
+      //   ? (temp.textContent = html)
+      //   : (temp.innerText = html);
+      // var output = temp.innerHTML;
+      // temp = null;
+      // return output;
+      if (process.client) {
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
+      }
     },
     likeOpt() {
       if (!this.getToken) {
@@ -689,7 +846,8 @@ export default {
           });
         });
     },
-    beforeComent(userId, parentCommentId, currentData, subData) {
+    beforeComent(userId, parentCommentId, currentData, subData, isEdit) {
+      this.isEdit = isEdit;
       this.anchor();
       this.parentCommentId = parentCommentId;
       this.commentUserId = userId;
@@ -697,16 +855,32 @@ export default {
       this.subData = subData;
       if (userId != 0) {
         if (subData) {
-          this.$refs.editor.editor.txt.html(
-            "<span>@" + subData.commentatorName + ":<span>"
-          );
+          if (isEdit) {
+            this.$refs.editor.editor.txt.html(this.htmlEncode(subData.content));
+          } else {
+            this.$refs.editor.editor.txt.html(
+              "<span>@" + subData.commentatorName + ":<span>"
+            );
+          }
         } else {
-          this.$refs.editor.editor.txt.html(
-            "<span>@" + currentData.commentatorName + ":<span>"
-          );
+          if (isEdit) {
+            this.$refs.editor.editor.txt.html(
+              this.htmlEncode(currentData.content)
+            );
+          } else {
+            this.$refs.editor.editor.txt.html(
+              "<span>@" + currentData.commentatorName + ":<span>"
+            );
+          }
         }
       } else {
-        this.$refs.editor.editor.txt.html("<span><span>");
+        if (isEdit) {
+          this.$refs.editor.editor.txt.html(
+            this.htmlEncode(currentData.content)
+          );
+        } else {
+          this.$refs.editor.editor.txt.html("<span><span>");
+        }
       }
     },
     advertiseClick(item) {
@@ -722,11 +896,9 @@ export default {
         }
       });
     },
-    editComment(item) {},
-    deleteComment(item) {},
     toPost() {
       this.$router.push({
-        name: "Post",
+        name: "index-post",
         query: { postId: this.article.postId },
       });
     },
@@ -879,7 +1051,7 @@ export default {
   font-size: 12px;
   color: #409eff;
 }
-.danger{
+.danger {
   color: #f56c6c;
 }
 .options i {

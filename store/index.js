@@ -1,4 +1,4 @@
-import { getToken, setToken, removeToken, getUserAvatar, getUserName, getUserId, setUserName, setUserId, setUserAvatar, removeUserName, removeUserId, removeUserAvatar, setUnReadMessage, removeUnReadMessage, getUnReadMessage } from '@/utils/auth';
+import { getToken, setToken, removeToken, getUserAvatar, getUserName, getUserId, setUserName, setUserId, setUserAvatar, removeUserName, removeUserId, removeUserAvatar, setUnReadMessage, removeUnReadMessage, getUnReadMessage,removeIsAdmin,setIsAdmin } from '@/utils/auth';
 import { login, register, findSiteUser, loginout } from '@/network/user'
  const cookieparser = process.server ? require('cookieparser') : undefined
 export const state = (context) => ({
@@ -7,7 +7,8 @@ export const state = (context) => ({
     avatar: '',
     name: '',
     userId: '',
-    unReadMessage: 0
+    unReadMessage: 0,
+    isAdmin:false
   }
 })
 export const getters = {
@@ -28,6 +29,9 @@ export const getters = {
   },
   getUnReadMsg(state) {
     return state.user.unReadMessage
+  },
+  getIsAdmin(state) {
+    return state.user.isAdmin
   }
 }
 export const mutations = {
@@ -46,6 +50,9 @@ export const mutations = {
   SET_UnReadMessage: (state, unReadMessage) => {
     state.user.unReadMessage = unReadMessage
   },
+  SET_IsAdmin: (state, isAdmin) => {
+    state.user.isAdmin = isAdmin
+  },
 }
 export const actions = {
   nuxtServerInit({ commit }, { req }) {
@@ -59,6 +66,8 @@ export const actions = {
         commit('SET_AVATAR', parsed['User-Avatar'])
         commit('SET_UserId', parsed['User-ID'])
         commit('SET_UnReadMessage', parsed['User-UnReadMessage'])
+        commit('SET_IsAdmin', parsed['User-IsAdmin'])
+
       } catch (err) {
         console.log(err)
         // No valid cookie found
@@ -75,12 +84,14 @@ export const actions = {
         commit('SET_AVATAR', data.user.avatar)
         commit('SET_UserId', data.user.userId)
         commit('SET_UnReadMessage', data.user.unReadMessage)
+        commit('SET_IsAdmin', data.user.isAdmin)
 
         setToken(data.token)
         setUserId(data.user.userId)
         setUserName(data.user.userName)
         setUserAvatar(data.user.avatar)
         setUnReadMessage(data.user.unReadMessage)
+        setIsAdmin(data.user.isAdmin)
         resolve()
       }).catch(error => {
         reject(error)
@@ -95,10 +106,12 @@ export const actions = {
         commit('SET_UserId', null);
         commit('SET_AVATAR', null)
         commit('SET_UnReadMessage', null)
+        commit('SET_IsAdmin', null)
         removeToken(null)
         removeUserId(null)
         removeUserName(null)
         removeUserAvatar(null)
+        removeIsAdmin(null)
         resolve()
       }).catch(error => {
         reject(error)

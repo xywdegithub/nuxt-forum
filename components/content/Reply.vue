@@ -1,7 +1,12 @@
 <template>
   <div class="replys">
-    <div  class="reply" v-for="(item, key) in data" :key="key" :ref="item.postCommentId">
-      <div class="con" >
+    <div
+      class="reply"
+      v-for="(item, key) in data"
+      :key="key"
+      :ref="item.postCommentId"
+    >
+      <div class="con">
         <div class="avatar">
           <el-avatar
             shape="square"
@@ -11,7 +16,11 @@
         </div>
         <div class="replyContent">
           <div class="name">{{ item.commentatorName }}</div>
-          <div class="details" v-html="item.content" @click="showImg($event)"></div>
+          <div
+            class="details"
+            v-html="HTMLDecode(item.content)"
+            @click="showImg($event)"
+          ></div>
         </div>
       </div>
       <div class="opts">
@@ -19,20 +28,34 @@
           <slot name="options" :data="item"></slot>
         </div>
         <div>
+          <a
+            class="optionsMore"
+            :class="{ subActive: item.subSort == true }"
+            @click="selectPostComment(item)"
+          >
+            <i class="iconfont iconpaixu1"></i>
+            <span class="hidden-xs-only">按赞排序</span></a
+          >
           <slot name="editanddelete" :data="item"></slot>
           <span class="time">{{ item.createDate }}</span>
         </div>
       </div>
       <template v-if="item.commentList">
-        <sub-reply :ref="'subReply_'+item.postCommentId"  :data="item.commentList">
+        <sub-reply
+          :ref="'subReply_' + item.postCommentId"
+          :data="item.commentList"
+        >
           <template slot-scope="scope" slot="subReply">
             <slot name="subReply" :data="scope.data" :parent="item"></slot>
+          </template>
+          <template slot-scope="scope" slot="subReplyEdit">
+            <slot name="subReplyEdit" :data="scope.data" :parent="item"></slot>
           </template>
         </sub-reply>
       </template>
     </div>
     <slot name="loadmore"></slot>
-     <div
+    <div
       class="imgDolg"
       v-show="imgPreview.show"
       @click.stop="imgPreview.show = false"
@@ -48,13 +71,14 @@
 </template>
 <script>
 import subReply from "@/components/content/SubReply.vue";
+import { selectPostComment } from "@/network/index.js";
 export default {
   data() {
     return {
-       imgPreview:{
-        img:"",
-        show:false
-      }
+      imgPreview: {
+        img: "",
+        show: false,
+      },
     };
   },
   props: {
@@ -71,34 +95,53 @@ export default {
   watch: {
     data(val) {
       this.data = val;
-      this.initContent();
+      //this.initContent();
     },
   },
   created() {
-    this.initContent();
+    //this.initContent();
   },
   methods: {
-    initContent() {
-      if (this.data) {
-        for (let item of this.data) {
-          item.content = this.HTMLDecode(item.content);
-        }
+    selectPostComment(item) {
+      if(typeof item.subSort == undefined)item.subSort =false
+      this.$set(item,'subSort',!item.subSort)
+      let data = {
+        postId: item.postId,
+        pageNum: 1,
+        pageSize: 10000,
+        parentCommentId: item.parentCommentId,
+      };
+      console.log(item.subSort)
+      if (item.subSort) {
+        data.sortField = "likeNumber";
+        data.sortOrder = "descend";
       }
+      item.commentList=[]
+      // selectPostComment(data).then((r) => {
+      //   let res = r.data;
+      //   this.commentLoading = false;
+      //   if (res && res.rows) {
+      //     this.replys = this.replys.concat(res.rows);
+      //     this.commentPage.total = res.total;
+      //   } else {
+      //     this.replys = [];
+      //   }
+      // });
     },
     HTMLDecode(text) {
       if (process.client) {
-      var temp = document.createElement("div");
-      temp.innerHTML = text;
-      var output = temp.innerText || temp.textContent;
-      temp = null;
-      return output;
+        var temp = document.createElement("div");
+        temp.innerHTML = text;
+        var output = temp.innerText || temp.textContent;
+        temp = null;
+        return output;
       }
     },
-     showImg(e) {
+    showImg(e) {
       // console.log(e.target)
-      if (e.target.tagName == 'IMG') {
-        this.imgPreview.img = e.target.src
-        this.imgPreview.show = true
+      if (e.target.tagName == "IMG") {
+        this.imgPreview.img = e.target.src;
+        this.imgPreview.show = true;
       }
     },
   },
@@ -111,12 +154,12 @@ export default {
   background: white;
   border-radius: 5px;
   font-size: 14px;
-      border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
 }
 .reply {
   padding: 20px;
 }
-.reply+.reply {
+.reply + .reply {
   border-top: 1px solid #eee;
 }
 .con {
@@ -129,7 +172,7 @@ export default {
   flex: 1;
   line-height: 1.6;
 }
-.name{
+.name {
   color: #155faa;
   font-size: 14px;
 }
@@ -187,15 +230,24 @@ p {
   align-items: center;
   justify-content: center;
 }
-.imgDolg  #imgDolgClose {
-    position: fixed;
-    top: 35px;
-    cursor: pointer;
-    right: 7%;
-    font-size: 50px;
-    color: white;
-  }
-.imgDolg  img{
-     height: 80%;
-  }
+.imgDolg #imgDolgClose {
+  position: fixed;
+  top: 35px;
+  cursor: pointer;
+  right: 7%;
+  font-size: 50px;
+  color: white;
+}
+.imgDolg img {
+  height: 80%;
+}
+.subActive {
+  color: #409eff  !important;
+}
+.optionsMore {
+  padding: 6px 4px;
+  border-radius: 3px;
+  font-size: 12px;
+  color: #606266;
+}
 </style>

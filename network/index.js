@@ -158,3 +158,16 @@ export function updatePost( data ){
     })
 }
 
+export function updateComment(data){  
+    return request({
+        url:'/website/postComment/updateComment',
+        params:data
+    })
+}
+export function deleteComment(data){  
+    return request({
+        url:'/website/postComment/deleteComment',
+        params:data
+    })
+}
+

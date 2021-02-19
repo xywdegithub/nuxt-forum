@@ -5,6 +5,7 @@ const userNameKey='User-Name'
 const userIdKey='User-ID'
 const userAvatarKey='User-Avatar'
 const unReadMessageKey='User-UnReadMessage'
+const isAdmin='User-IsAdmin'
 
 export function getToken() {
   return Cookies.get(TokenKey)
@@ -61,4 +62,15 @@ export function getUnReadMessage() {
 }
 export function removeUnReadMessage() {
   return Cookies.remove(unReadMessageKey)
+}
+export function getIsAdmin() {
+  return Cookies.get(isAdmin)
+}
+
+export function setIsAdmin(admin) {
+  return Cookies.set(isAdmin, admin)
+}
+
+export function removeIsAdmin() {
+  return Cookies.remove(isAdmin)
 }
