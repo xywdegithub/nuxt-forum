@@ -170,4 +170,10 @@ export function deleteComment(data){
         params:data
     })
 }
+export function selectSecondPostComment(data){  
+    return request({
+        url:'/website/postComment/selectSecondPostComment',
+        params:data
+    })
+}
 

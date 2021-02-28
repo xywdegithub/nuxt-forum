@@ -31,7 +31,7 @@
           <a
             class="optionsMore"
             :class="{ subActive: item.subSort == true }"
-            @click="selectPostComment(item)"
+            @click="selectSecondPostComment(item)"
           >
             <i class="iconfont iconpaixu1"></i>
             <span class="hidden-xs-only">按赞排序</span></a
@@ -71,7 +71,7 @@
 </template>
 <script>
 import subReply from "@/components/content/SubReply.vue";
-import { selectPostComment } from "@/network/index.js";
+import { selectSecondPostComment } from "@/network/index.js";
 export default {
   data() {
     return {
@@ -102,31 +102,27 @@ export default {
     //this.initContent();
   },
   methods: {
-    selectPostComment(item) {
+    selectSecondPostComment(item) {
       if(typeof item.subSort == undefined)item.subSort =false
       this.$set(item,'subSort',!item.subSort)
       let data = {
-        postId: item.postId,
-        pageNum: 1,
-        pageSize: 10000,
-        parentCommentId: item.parentCommentId,
+        parentCommentId: item.postCommentId,
       };
       console.log(item.subSort)
       if (item.subSort) {
-        data.sortField = "likeNumber";
-        data.sortOrder = "descend";
+        data.secondSortName = "pc.like_number";
+        data.secondSortType = "desc";
+      }else{
+         data.secondSortName = "pc.create_date";
+        data.secondSortType = "desc";
       }
-      item.commentList=[]
-      // selectPostComment(data).then((r) => {
-      //   let res = r.data;
-      //   this.commentLoading = false;
-      //   if (res && res.rows) {
-      //     this.replys = this.replys.concat(res.rows);
-      //     this.commentPage.total = res.total;
-      //   } else {
-      //     this.replys = [];
-      //   }
-      // });
+    //  item.commentList=[]
+      selectSecondPostComment(data).then((r) => {
+        let res = r.data;
+        if(res){
+        item.commentList=res
+        }
+      });
     },
     HTMLDecode(text) {
       if (process.client) {

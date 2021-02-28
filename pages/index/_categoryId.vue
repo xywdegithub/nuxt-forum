@@ -3,7 +3,7 @@
     <classes  :data="classes"></classes>
     <el-row class="content-wrap" v-loading="loading">
       <el-col :span="18" :xs="24" class="posts">
-        <template v-if="list.length > 0">
+        <template v-if="list && list.length > 0">
           <div
             class="nav hidden-xs-only"
             v-if="subCategoryId || categoryId || title"
@@ -202,38 +202,52 @@ export default {
     classes,
     vAdmin,
   },
-  async asyncData({ params }) {
+  async asyncData({query, params }) {
     if (!process.server) return;
-    const {
-      siteAnnotation,
-      siteIntroduction,
-      topName,
-      siteName,
-    } = await allSiteConfig();
+     let listData={
+       title: query.title,
+        parentCategoryId: params.categoryId == 0 ? null : params.categoryId,
+        subCategoryId: query.subCategoryId,
+        isfeatured: false,
+        isNew: false,
+        pageSize: query.pageSize?parseInt(query.pageSize):20,
+        pageNum: query.currentPage?parseInt(query.currentPage):1,
+        isShowHome:1
+    }
+    const[siteConfig,list] =await Promise.all([
+     allSiteConfig(), selectPosts(listData)
+    ])
     return {
-      announcement: siteAnnotation,
-      siteIntroduction: siteIntroduction,
-      webTitle: topName ? topName.value : "",
-      siteTitle: siteName ? siteName.value : "",
+      announcement: siteConfig.siteAnnotation,
+      siteIntroduction: siteConfig.siteIntroduction,
+      webTitle: siteConfig.topName ? siteConfig.topName.value : "",
+      siteTitle: siteConfig.siteName ? siteConfig.siteName.value : "",
+      list : list.data.rows,
+      total:list.data.total,
+      pageSize: query.pageSize?parseInt(query.pageSize):20,
+      currentPage: query.currentPage?parseInt(query.currentPage):1,
     };
   },
+   watchQuery: true,
+   watchQuery: ["categoryId","subCategoryId","pageSize","currentPage"],
   computed: {
     ...mapGetters(["getUserId"]),
   },
   watch: {
     $route(to, from) {
-      this.categoryId = this.$route.params.categoryId;
-      this.subCategoryId = this.$route.query.subCategoryId;
-      this.title = this.$route.query.title;
-      if (this.$route.query.currentPage)
-        this.currentPage = parseInt(this.$route.query.currentPage);
-      else this.currentPage = 1;
-      if (this.$route.query.pageSize)
-        this.pageSize = parseInt(this.$route.query.pageSize);
-      else this.pageSize = 20;
-      if(this.$refs.index)
+      console.log('change')
+      // this.categoryId = this.$route.params.categoryId;
+      // this.subCategoryId = this.$route.query.subCategoryId;
+      // this.title = this.$route.query.title;
+      // if (this.$route.query.currentPage)
+      //   this.currentPage = parseInt(this.$route.query.currentPage);
+      // else this.currentPage = 1;
+      // if (this.$route.query.pageSize)
+      //   this.pageSize = parseInt(this.$route.query.pageSize);
+      // else this.pageSize = 20;
+      // if(this.$refs.index)
       this.$refs.index.scrollIntoView(false);
-      this.selectPosts();
+     // this.selectPosts();
       this.getType();
       this.findCategory();
       if (this.subCategoryId) {
@@ -245,20 +259,20 @@ export default {
     },
   },
   created() {
-    if (this.$route.params.categoryId) {
-      this.categoryId = this.$route.params.categoryId;
-    }
-    if (this.$route.query.subCategoryId) {
-      this.subCategoryId = this.$route.query.subCategoryId;
-    }
-    if (this.$route.query.currentPage)
-      this.currentPage = parseInt(this.$route.query.currentPage);
-    else this.currentPage = 1;
-    if (this.$route.query.pageSize)
-      this.pageSize = parseInt(this.$route.query.pageSize);
-    else this.pageSize = 20;
+    // if (this.$route.params.categoryId) {
+    //   this.categoryId = this.$route.params.categoryId;
+    // }
+    // if (this.$route.query.subCategoryId) {
+    //   this.subCategoryId = this.$route.query.subCategoryId;
+    // }
+    // if (this.$route.query.currentPage)
+    //   this.currentPage = parseInt(this.$route.query.currentPage);
+    // else this.currentPage = 1;
+    // if (this.$route.query.pageSize)
+    //   this.pageSize = parseInt(this.$route.query.pageSize);
+    // else this.pageSize = 20;
     this.findCategoryTree();
-    this.selectPosts();
+   // this.selectPosts();
     this.selectSiteStatic();
     this.findCategory();
     if (this.subCategoryId) {
@@ -403,29 +417,17 @@ export default {
         query: { postId: item.postId, anchor: "edit" },
       });
     },
-    changeClass(id) {
-      this.categoryId = id;
-      this.selectPosts();
-    },
-    creamChange() {
-      this.cream = !this.cream;
-      this.selectPosts();
-    },
-    categoryChange(item) {
-      if (item.parentId) {
-        this.$router.push({
-          path: "/subIndex",
-          query: { subCategoryId: item.categoryId },
-        });
-      } else {
-        this.categoryId = item.categoryId;
-        this.selectPosts();
-      }
-    },
-    latestChange() {
-      this.latest = !this.latest;
-      this.selectPosts();
-    },
+    // categoryChange(item) {
+    //   if (item.parentId) {
+    //     this.$router.push({
+    //       path: "/subIndex",
+    //       query: { subCategoryId: item.categoryId },
+    //     });
+    //   } else {
+    //     this.categoryId = item.categoryId;
+    //     this.selectPosts();
+    //   }
+    // },
     getType() {
       if (this.subCategoryId) {
         for (let item of this.classes) {

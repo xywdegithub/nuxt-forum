@@ -4,7 +4,10 @@
       <el-col :span="18" :xs="24" class="posts">
         <div class="details">
           <v-post :data="article">
-            <template slot="edit" v-if="(getUserId && getUserId == article.userId) || getIsAdmin">
+            <template
+              slot="edit"
+              v-if="(getUserId && getUserId == article.userId) || getIsAdmin"
+            >
               <a @click="toPost">
                 <i class="iconfont iconbianji edit hidden-xs-only">&nbsp;</i>
                 <i class="iconfont iconbianji mobile_edit hidden-sm-and-up"
@@ -98,11 +101,17 @@
                   )
                 "
               >
-                <i class="iconfont iconpinglun"></i><span class="hidden-xs-only">评论</span> </a
-              >
+                <i class="iconfont iconpinglun"></i
+                ><span class="hidden-xs-only">评论</span>
+              </a>
             </template>
             <template v-slot:editanddelete="scope">
-              <span v-if="(getUserId && getUserId == scope.data.commentatorId) || getIsAdmin">
+              <span
+                v-if="
+                  (getUserId && getUserId == scope.data.commentatorId) ||
+                  getIsAdmin
+                "
+              >
                 <a
                   class="optionsMore"
                   @click="
@@ -128,7 +137,12 @@
               </span>
             </template>
             <template slot-scope="scope" slot="subReplyEdit">
-              <span v-if="(getUserId && getUserId == scope.data.commentatorId) || getIsAdmin">
+              <span
+                v-if="
+                  (getUserId && getUserId == scope.data.commentatorId) ||
+                  getIsAdmin
+                "
+              >
                 <a
                   class="optionsMore"
                   @click="
@@ -155,6 +169,35 @@
             </template>
             <template slot-scope="scope" slot="subReply">
               <a
+                v-if="scope.data.isLike == true"
+                class="options commentisLike"
+                @click="likePostComment(scope.data)"
+              >
+                <i class="iconfont iconshang"></i>
+                <span class="hidden-xs-only">已赞同</span>
+                <span>{{ scope.data.likeNumber }}</span></a
+              >
+              <a class="options" v-else @click="likePostComment(scope.data)">
+                <i class="iconfont iconshang"></i>
+                <span class="hidden-xs-only">赞同</span>
+                <span>{{ scope.data.likeNumber }}</span></a
+              >
+              <a
+                v-if="scope.data.isDisLike == true"
+                class="options commentisLike space"
+                @click="dislikePostComment(scope.data)"
+              >
+                <i class="iconfont iconxia1"></i
+              ></a>
+              <a
+                v-else
+                class="options space"
+                @click="dislikePostComment(scope.data)"
+              >
+                <i class="iconfont iconxia1"></i
+              ></a>
+
+              <a
                 class="options comment-my"
                 @click="
                   beforeComent(
@@ -166,7 +209,8 @@
                   )
                 "
               >
-                <i class="iconfont iconpinglun"></i> <span class="hidden-xs-only">评论</span></a
+                <i class="iconfont iconpinglun"></i>
+                <span class="hidden-xs-only">评论</span></a
               >
             </template>
             <template slot="loadmore">
@@ -328,10 +372,15 @@ export default {
     };
   },
   async asyncData({ query }) {
+    
     let postData = {
       postId: query.postId,
     };
-    const { data } = await findPost(postData);
+    
+    const {data}= await findPost(postData);
+    //  const[siteConfig,list] =await Promise.all([
+    //  findPost(postData), selectPosts(listData)
+    // ])
     let admin = null;
     if (data.userName) {
       admin = {
@@ -379,20 +428,20 @@ export default {
       article: {},
       advs: [],
       commentPage: {
-        pageSize: 50,
+        pageSize: 10,
         currentPage: 1,
         total: 0,
       },
       commentLoading: false,
       recommendPosts: [],
-      currentReply: {},
-      subData: {},
+      currentReply: null,
+      subData: null,
       dialogWidth: "50%",
       submitDisable: false,
       isEdit: false,
     };
   },
-  watchQuery: ["postId"],
+  watchQuery: ["postId",'currentPage'],
   components: {
     vAdmin,
     vPost,
@@ -401,7 +450,7 @@ export default {
     vEditor,
   },
   computed: {
-    ...mapGetters(["getUserId", "getToken","getIsAdmin"]),
+    ...mapGetters(["getUserId", "getToken", "getIsAdmin"]),
   },
   created() {
     this.postId = this.$route.query.postId;
@@ -483,29 +532,37 @@ export default {
       })
         .then(() => {
           var data = {
-            postCommentId: item.postCommentId
+            postCommentId: item.postCommentId,
           };
           deleteComment(data).then((res) => {
-        if(this.replys.length>0){
-          for(let i in this.replys){
-            if(this.replys[i].postCommentId==item.postCommentId){
-              this.replys.splice(i,1)
-              break;
+            if (res.data) {
+              this.article.commentNumber = res.data.commentNumber;
             }
-            if(this.replys[i].commentList && this.replys[i].commentList.length>0){
-              for(let j in this.replys[i].commentList){
-                if(this.replys[i].commentList[j].postCommentId==item.postCommentId){
-                  this.replys[i].commentList.splice(j,1)
+            if (this.replys.length > 0) {
+              for (let i in this.replys) {
+                if (this.replys[i].postCommentId == item.postCommentId) {
+                  this.replys.splice(i, 1);
+                  break;
+                }
+                if (
+                  this.replys[i].commentList &&
+                  this.replys[i].commentList.length > 0
+                ) {
+                  for (let j in this.replys[i].commentList) {
+                    if (
+                      this.replys[i].commentList[j].postCommentId ==
+                      item.postCommentId
+                    ) {
+                      this.replys[i].commentList.splice(j, 1);
+                    }
+                  }
                 }
               }
             }
-          }
-        }
             this.$message({
               type: "success",
               message: "删除成功",
             });
-
           });
         })
         .catch(() => {
@@ -635,25 +692,30 @@ export default {
         this.content = "";
         this.submitDisable = false;
         this.$refs.editor.editor.txt.clear();
+        console.log(this.subData)
         if (this.subData) {
           this.$refs.reply.$refs[
             "subReply_" + this.currentReply.postCommentId
           ][0].$refs[this.subData.postCommentId][0].scrollIntoView(false);
         } else if (this.currentReply) {
+          console.log(this.$refs.reply, this.currentReply.postCommentId)
           this.$refs.reply.$refs[
             this.currentReply.postCommentId
           ][0].scrollIntoView(false);
         }
         if (res && res.data) {
+          if (res.data) {
+            this.article.commentNumber = res.data.commentNumber;
+          }
           if (this.parentCommentId == 0) {
             if (this.replys.length >= this.commentPage.total) {
               this.replys.push(res.data);
             }
           } else {
-            if(this.currentReply.commentList){
-            this.currentReply.commentList.push(res.data);
-            }else{
-            this.currentReply.commentList=[res.data];
+            if (this.currentReply.commentList) {
+              this.currentReply.commentList.push(res.data);
+            } else {
+              this.currentReply.commentList = [res.data];
             }
           }
         }

@@ -3,8 +3,8 @@
     <v-head></v-head>
     <div class="content">
       <el-scrollbar>
-        <div class="container responsive">
-            <nuxt-child keep-alive :keep-alive-props="{ exclude: ['index-details'] }"  />
+        <div class="container responsive"> 
+            <nuxt-child  />
           <el-backtop target=".content"></el-backtop>
         </div>
       </el-scrollbar>
