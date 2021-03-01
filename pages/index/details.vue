@@ -371,13 +371,28 @@ export default {
       ],
     };
   },
+  async fetch() {
+    console.log('fetch')
+    let data = {
+      postId: this.postId,
+      pageNum: this.commentPage.currentPage,
+      pageSize: this.commentPage.pageSize,
+    };
+    if (this.sort) {
+      data.sortField = "likeNumber";
+      data.sortOrder = "descend";
+    }
+    let comment = await selectPostComment(data);
+    this.replys = this.replys.concat(comment.data.rows);
+    this.commentPage.total = comment.data.total;
+  },
   async asyncData({ query }) {
-    
+
     let postData = {
       postId: query.postId,
     };
-    
-    const {data}= await findPost(postData);
+
+    const { data } = await findPost(postData);
     //  const[siteConfig,list] =await Promise.all([
     //  findPost(postData), selectPosts(listData)
     // ])
@@ -403,7 +418,7 @@ export default {
     $route(to, from) {
       this.postId = this.$route.query.postId;
       this.dealArticle();
-      this.selectPostComment();
+     // this.selectPostComment();
       this.selectPostReportTypeList();
     },
   },
@@ -428,7 +443,7 @@ export default {
       article: {},
       advs: [],
       commentPage: {
-        pageSize: 10,
+        pageSize: 1,
         currentPage: 1,
         total: 0,
       },
@@ -441,7 +456,7 @@ export default {
       isEdit: false,
     };
   },
-  watchQuery: ["postId",'currentPage'],
+  watchQuery: ["postId"],
   components: {
     vAdmin,
     vPost,
@@ -455,7 +470,7 @@ export default {
   created() {
     this.postId = this.$route.query.postId;
     this.dealArticle();
-    this.selectPostComment();
+    //this.selectPostComment();
     this.selectPostReportTypeList();
     if (process.client) {
       if (window.innerWidth < 768) {
@@ -692,13 +707,13 @@ export default {
         this.content = "";
         this.submitDisable = false;
         this.$refs.editor.editor.txt.clear();
-        console.log(this.subData)
+        console.log(this.subData);
         if (this.subData) {
           this.$refs.reply.$refs[
             "subReply_" + this.currentReply.postCommentId
           ][0].$refs[this.subData.postCommentId][0].scrollIntoView(false);
         } else if (this.currentReply) {
-          console.log(this.$refs.reply, this.currentReply.postCommentId)
+          console.log(this.$refs.reply, this.currentReply.postCommentId);
           this.$refs.reply.$refs[
             this.currentReply.postCommentId
           ][0].scrollIntoView(false);
@@ -798,7 +813,8 @@ export default {
       this.sort = !this.sort;
       this.replys = [];
       this.commentPage.currentPage = 1;
-      this.selectPostComment();
+      this.$fetch()
+    //  this.selectPostComment();
     },
     selectAdvertisementList() {
       let data = {
@@ -817,7 +833,8 @@ export default {
     },
     loadMore() {
       this.commentPage.currentPage += 1;
-      this.selectPostComment();
+       this.$fetch()
+      //this.selectPostComment();
     },
     likePostComment(item) {
       if (!this.getToken) {
