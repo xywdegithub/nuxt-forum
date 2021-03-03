@@ -106,10 +106,10 @@
               </a>
             </template>
             <template v-slot:editanddelete="scope">
-              <span
+               <span
                 v-if="
                   (getUserId && getUserId == scope.data.commentatorId) ||
-                  getIsAdmin
+                  getIsAdmin==true
                 "
               >
                 <a
@@ -140,7 +140,7 @@
               <span
                 v-if="
                   (getUserId && getUserId == scope.data.commentatorId) ||
-                  getIsAdmin
+                  getIsAdmin==true
                 "
               >
                 <a
@@ -372,7 +372,6 @@ export default {
     };
   },
   async fetch() {
-    console.log('fetch')
     let data = {
       postId: this.postId,
       pageNum: this.commentPage.currentPage,
@@ -443,7 +442,7 @@ export default {
       article: {},
       advs: [],
       commentPage: {
-        pageSize: 1,
+        pageSize: 50,
         currentPage: 1,
         total: 0,
       },
@@ -707,13 +706,11 @@ export default {
         this.content = "";
         this.submitDisable = false;
         this.$refs.editor.editor.txt.clear();
-        console.log(this.subData);
         if (this.subData) {
           this.$refs.reply.$refs[
             "subReply_" + this.currentReply.postCommentId
           ][0].$refs[this.subData.postCommentId][0].scrollIntoView(false);
         } else if (this.currentReply) {
-          console.log(this.$refs.reply, this.currentReply.postCommentId);
           this.$refs.reply.$refs[
             this.currentReply.postCommentId
           ][0].scrollIntoView(false);

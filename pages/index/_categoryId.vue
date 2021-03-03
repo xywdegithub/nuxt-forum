@@ -203,7 +203,6 @@ export default {
     vAdmin,
   },
   async fetch() {
-    console.log('fetch')
     let listData={
        title: this.title,
         parentCategoryId: this.categoryId == 0 ? null : this.categoryId,

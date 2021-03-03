@@ -56,7 +56,7 @@
           <li v-for="item in data" :key="item.id">
             <nuxt-link
               :class="{ mobile_active: categoryId == item.id }"
-              :to="{ name: 'index', query: { categoryId: item.id } }"
+              :to="{name: 'index-categoryId',params:{ categoryId: item.id} }"
               >{{ item.title }}</nuxt-link
             >
           </li>
